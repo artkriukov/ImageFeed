@@ -8,20 +8,24 @@
 import UIKit
 
 final class ImagesTableView: UIView {
+    // MARK: - Private Properties
+    private var photosName = Array(0..<20).map { "\($0)" }
 
     private lazy var imagesTableView: UITableView = {
-        let element = UITableView()
-        element.separatorStyle = .none
-        element.dataSource = self
-        element.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
-        element.backgroundColor = UIColor(named: "BackgroundColor")
-        element.translatesAutoresizingMaskIntoConstraints = false
-        return element
+        let tableView = UITableView()
+        tableView.separatorStyle = .none
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.backgroundColor = UIColor(named: "BackgroundColor")
+        tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
     }()
     
     init() {
         super.init(frame: .zero)
-        setViews()
+        setupViews()
         setupConstraints()
     }
     
@@ -29,34 +33,52 @@ final class ImagesTableView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    func configCell(for cell: ImagesListCell) { } 
-
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        return formatter
+    }()
 }
+
 // MARK: - UITableViewDataSource
 extension ImagesTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return photosName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as! ImagesListCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
+            return UITableViewCell()
+        }
         
-        // configCell(for: imageListCell)
+        let photoName = photosName[indexPath.row]
+        let isLiked = indexPath.row % 2 == 0
+        let date = Self.dateFormatter.string(from: Date())
+        
+        cell.configure(with: photoName, isLiked: isLiked, date: date)
         
         return cell
     }
 }
 
 // MARK: - UITableViewDelegate
- extension ImagesTableView: UITableViewDelegate {
-     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-         
-     }
+extension ImagesTableView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let image = UIImage(named: photosName[indexPath.row]) else {
+            return 0
+        }
+        
+        let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
+        let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
+        let scale = imageViewWidth / image.size.width
+        return image.size.height * scale + imageInsets.top + imageInsets.bottom
+    }
 }
 
 // MARK: - Set Views and Setup Constraints
 private extension ImagesTableView {
-    func setViews() {
+    func setupViews() {
         addSubview(imagesTableView)
     }
     
