@@ -10,7 +10,7 @@ import UIKit
 final class ImagesListCell: UITableViewCell {
     
     static var reuseIdentifier: String {
-        return String(describing: self)
+        String(describing: self)
     }
     
     // MARK: - UI Elements
@@ -76,10 +76,8 @@ private extension ImagesListCell {
             mainImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             mainImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             
-            favoriteButton.topAnchor.constraint(equalTo: mainImage.topAnchor, constant: 13),
-            favoriteButton.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor, constant: -13),
-            favoriteButton.widthAnchor.constraint(equalToConstant: 40),
-            favoriteButton.heightAnchor.constraint(equalToConstant: 40),
+            favoriteButton.topAnchor.constraint(equalTo: mainImage.topAnchor),
+            favoriteButton.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor),
             
             dateLabel.bottomAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: -8),
             dateLabel.leadingAnchor.constraint(equalTo: mainImage.leadingAnchor, constant: 8),
