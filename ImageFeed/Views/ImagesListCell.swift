@@ -57,6 +57,7 @@ final class ImagesListCell: UITableViewCell {
         mainImage.image = UIImage(named: photoName)
         dateLabel.text = date
         let likeImage = isLiked ? UIImage(named: "NoActiveBtn") : UIImage(named: "ActiveBtn")
+        self.selectionStyle = .none
         favoriteButton.setImage(likeImage, for: .normal)
     }
 }
