@@ -74,6 +74,11 @@ extension ImagesTableView: UITableViewDelegate {
         let scale = imageViewWidth / image.size.width
         return image.size.height * scale + imageInsets.top + imageInsets.bottom
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
 }
 
 // MARK: - Set Views and Setup Constraints
