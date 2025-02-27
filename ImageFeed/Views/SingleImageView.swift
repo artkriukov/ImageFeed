@@ -17,7 +17,15 @@ final class SingleImageView: UIView {
     weak var delegate: SingleImageViewDelegate?
     
     // MARK: - UI
-    lazy var singleImage: UIImageView = {
+    private lazy var scrollView: UIScrollView = {
+        let element = UIScrollView()
+        element.delegate = self
+        element.minimumZoomScale = 1.0
+        element.maximumZoomScale = 3.0
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
+    }()
+    private(set) lazy var singleImage: UIImageView = {
         let element = UIImageView()
         element.image = UIImage(named: "0")
         element.contentMode = .scaleAspectFit
@@ -57,21 +65,31 @@ final class SingleImageView: UIView {
 private extension SingleImageView {
     func setupViews() {
         backgroundColor = K.Colors.backgroundColor
-        addSubview(singleImage)
+        addSubview(scrollView)
+        scrollView.addSubview(singleImage)
         addSubview(backwardButton)
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            singleImage.topAnchor.constraint(equalTo: topAnchor),
-            singleImage.leadingAnchor.constraint(equalTo: leadingAnchor),
-            singleImage.bottomAnchor.constraint(equalTo: bottomAnchor),
-            singleImage.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            
+            singleImage.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            singleImage.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
             
             backwardButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 11),
             backwardButton.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 9),
             backwardButton.widthAnchor.constraint(equalToConstant: 24),
             backwardButton.heightAnchor.constraint(equalToConstant: 24)
         ])
+    }
+}
+
+extension SingleImageView: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return singleImage
     }
 }
