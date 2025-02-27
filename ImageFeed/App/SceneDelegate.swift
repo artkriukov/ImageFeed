@@ -19,16 +19,20 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tapBarController = UITabBarController()
         
         let imagesListVC = ImagesListViewController()
+        
+        let navController = UINavigationController(rootViewController: imagesListVC)
+        
         imagesListVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.editorialActive, tag: 0)
         
         let profileVC = ProfileViewController()
         profileVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.profileActive, tag: 1)
         
-        tapBarController.viewControllers = [imagesListVC, profileVC]
+        tapBarController.viewControllers = [navController, profileVC]
         
         tapBarController.tabBar.tintColor = K.Colors.mainTextColor
         
         setupTabBarAppearance()
+        setupNavBarAppearance()
         
         window?.rootViewController = tapBarController
         window?.makeKeyAndVisible()
@@ -42,6 +46,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UITabBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+    }
+    
+    private func setupNavBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = K.Colors.backgroundColor
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
         }
     }
 
