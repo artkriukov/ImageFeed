@@ -14,7 +14,7 @@ final class ImagesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = tableView
-        view.backgroundColor = UIColor(named: "BackgroundColor")
+        view.backgroundColor = K.backgroundColor
     }
 }
 
