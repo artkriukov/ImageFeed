@@ -81,6 +81,7 @@ extension ImagesTableView: UITableViewDelegate {
 private extension ImagesTableView {
     func setupViews() {
         addSubview(imagesTableView)
+        
     }
     
     func setupConstraints() {

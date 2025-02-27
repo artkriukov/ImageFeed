@@ -20,4 +20,9 @@ struct K {
         static let activeButton = UIImage(named: "ActiveBtn")
     }
     
+    struct TapBarImages {
+        static let editorialActive = UIImage(named: "tab_editorial_active")
+        static let profileActive = UIImage(named: "tab_profile_active")
+    }
+    
 }
