@@ -16,12 +16,21 @@ final class SingleImageView: UIView {
     // MARK: - Private Properties
     weak var delegate: SingleImageViewDelegate?
     
+    var image: UIImage? {
+        didSet {
+            singleImage.image = image
+            if let image = image {
+                rescaleAndCenterImageInScrollView(image: image)
+            }
+        }
+    }
+    
     // MARK: - UI
     private lazy var scrollView: UIScrollView = {
         let element = UIScrollView()
         element.delegate = self
-        element.minimumZoomScale = 1.0
-        element.maximumZoomScale = 3.0
+        element.minimumZoomScale = 0.1
+        element.maximumZoomScale = 1.3
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -58,7 +67,23 @@ final class SingleImageView: UIView {
     @objc private func backwardTapped() {
         delegate?.didTapCloseButton()
     }
-
+    
+    private func rescaleAndCenterImageInScrollView(image: UIImage) {
+        let minZoomScale = scrollView.minimumZoomScale
+        let maxZoomScale = scrollView.maximumZoomScale
+        layoutIfNeeded()
+        let visibleRectSize = scrollView.bounds.size
+        let imageSize = image.size
+        let hScale = visibleRectSize.width / imageSize.width
+        let vScale = visibleRectSize.height / imageSize.height
+        let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
+        scrollView.setZoomScale(scale, animated: false)
+        scrollView.layoutIfNeeded()
+        let newContentSize = scrollView.contentSize
+        let x = (newContentSize.width - visibleRectSize.width) / 2
+        let y = (newContentSize.height - visibleRectSize.height) / 2
+        scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+    }
 }
 
 // MARK: - Setup Views and Setup Constraints
