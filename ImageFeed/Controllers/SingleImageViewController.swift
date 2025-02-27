@@ -1,5 +1,5 @@
 //
-//  ProfileViewController.swift
+//  SingleImageViewController.swift
 //  ImageFeed
 //
 //  Created by Artem Kriukov on 27.02.2025.
@@ -7,17 +7,15 @@
 
 import UIKit
 
-final class ProfileViewController: UIViewController {
+final class SingleImageViewController: UIViewController {
 
     // MARK: - Private Properties
-    private let profileView = ProfileView()
+    let singleImageView = SingleImageView()
     
     // MARK: - Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.view = profileView
-        
+        self.view = singleImageView
     }
 
 }

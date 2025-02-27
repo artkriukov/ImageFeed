@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol ImagesTableViewDelegate: AnyObject {
+    func didSelectImage(_ image: UIImage)
+}
+
 final class ImagesTableView: UIView {
     // MARK: - Private Properties
     private var photosName = Array(0..<20).map { "\($0)" }
+    weak var selectionDelegate: ImagesTableViewDelegate?
 
+    // MARK: - UI
     private lazy var imagesTableView: UITableView = {
         let tableView = UITableView()
         tableView.separatorStyle = .none
@@ -23,6 +29,7 @@ final class ImagesTableView: UIView {
         return tableView
     }()
     
+    // MARK: - Init
     init() {
         super.init(frame: .zero)
         setupViews()
@@ -73,6 +80,14 @@ extension ImagesTableView: UITableViewDelegate {
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
         let scale = imageViewWidth / image.size.width
         return image.size.height * scale + imageInsets.top + imageInsets.bottom
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let imageName = photosName[indexPath.row]
+        
+        if let selectedImage = UIImage(named: imageName) ?? UIImage(named: "0") {
+            selectionDelegate?.didSelectImage(selectedImage)
+        }
     }
     
 }

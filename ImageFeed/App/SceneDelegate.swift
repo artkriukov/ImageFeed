@@ -29,8 +29,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         tapBarController.viewControllers = [navController, profileVC]
         
-        tapBarController.tabBar.tintColor = K.Colors.mainTextColor
-        
         setupTabBarAppearance()
         setupNavBarAppearance()
         
@@ -47,17 +45,21 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
+        
+        UITabBar.appearance().tintColor = K.Colors.mainTextColor
     }
     
     private func setupNavBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = K.Colors.backgroundColor
-        
+
         UINavigationBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
         }
+        
+        UINavigationBar.appearance().tintColor = K.Colors.mainTextColor
     }
 
 }

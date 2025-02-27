@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileView: UIView {
 
+    // MARK: - UI
     private lazy var userStackView: UIStackView = {
         let element = UIStackView()
         element.axis = .horizontal
@@ -67,6 +68,7 @@ final class ProfileView: UIView {
         return element
     }()
     
+    // MARK: - Init
     init() {
         super.init(frame: .zero)
         setupViews()
