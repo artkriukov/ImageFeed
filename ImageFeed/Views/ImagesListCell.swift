@@ -25,7 +25,7 @@ final class ImagesListCell: UITableViewCell {
     
     private let favoriteButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "NoActiveBtn"), for: .normal)
+        button.setImage(K.Images.noActiveButton, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -33,7 +33,7 @@ final class ImagesListCell: UITableViewCell {
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor(named: "TextColor")
+        label.textColor = K.Colors.mainTextColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -56,7 +56,7 @@ final class ImagesListCell: UITableViewCell {
     func configure(with photoName: String, isLiked: Bool, date: String) {
         mainImage.image = UIImage(named: photoName)
         dateLabel.text = date
-        let likeImage = isLiked ? UIImage(named: "NoActiveBtn") : UIImage(named: "ActiveBtn")
+        let likeImage = isLiked ? K.Images.noActiveButton : K.Images.activeButton
         self.selectionStyle = .none
         favoriteButton.setImage(likeImage, for: .normal)
     }

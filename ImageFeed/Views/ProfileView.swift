@@ -27,7 +27,7 @@ final class ProfileView: UIView {
     
     private lazy var logoutButton: UIButton = {
         let element = UIButton(type: .custom)
-        element.setImage(UIImage(named: "Exit"), for: .normal)
+        element.setImage(K.Images.logoutButton, for: .normal)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -44,7 +44,7 @@ final class ProfileView: UIView {
         let element = UILabel()
         element.text = "Екатерина Новикова"
         element.font = .systemFont(ofSize: 23, weight: .bold)
-        element.textColor = K.mainTextColor
+        element.textColor = K.Colors.mainTextColor
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -53,7 +53,7 @@ final class ProfileView: UIView {
         let element = UILabel()
         element.text = "@ekaterina_nov"
         element.font = .systemFont(ofSize: 13, weight: .regular)
-        element.textColor = K.secondaryTextColor
+        element.textColor = K.Colors.secondaryTextColor
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -62,7 +62,7 @@ final class ProfileView: UIView {
         let element = UILabel()
         element.text = "Hello, world!"
         element.font = .systemFont(ofSize: 13, weight: .regular)
-        element.textColor = K.mainTextColor
+        element.textColor = K.Colors.mainTextColor
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -81,7 +81,7 @@ final class ProfileView: UIView {
 // MARK: - Set Views and Setup Constraints
 private extension ProfileView {
     func setupViews() {
-        backgroundColor = K.backgroundColor
+        backgroundColor = K.Colors.backgroundColor
         
         addSubview(userStackView)
         userStackView.addArrangedSubview(userImage)

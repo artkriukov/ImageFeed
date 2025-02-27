@@ -17,7 +17,7 @@ final class ImagesTableView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
-        tableView.backgroundColor = UIColor(named: "BackgroundColor")
+        tableView.backgroundColor = K.Colors.backgroundColor
         tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
