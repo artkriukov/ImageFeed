@@ -15,7 +15,13 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
+        singleImageView.delegate = self
         self.view = singleImageView
     }
+}
 
+extension SingleImageViewController: SingleImageViewDelegate {    
+    func didTapCloseButton() {
+        self.dismiss(animated: true)
+    }
 }

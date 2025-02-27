@@ -17,7 +17,7 @@ final class ImagesListViewController: UIViewController {
         super.viewDidLoad()
         self.view = tableView
         
-        tableView.selectionDelegate = self
+        tableView.delegate = self
         view.backgroundColor = K.Colors.backgroundColor
     }
 }
@@ -26,6 +26,7 @@ extension ImagesListViewController: ImagesTableViewDelegate {
     func didSelectImage(_ image: UIImage) {
         let singleImageVC = SingleImageViewController()
         singleImageVC.singleImageView.singleImage.image = image
-        navigationController?.pushViewController(singleImageVC, animated: true)
+        singleImageVC.modalPresentationStyle = .fullScreen
+        present(singleImageVC, animated: true)
     }
 }

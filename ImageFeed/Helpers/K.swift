@@ -18,6 +18,7 @@ struct K {
         static let logoutButton = UIImage(named: "Exit")
         static let noActiveButton = UIImage(named: "NoActiveBtn")
         static let activeButton = UIImage(named: "ActiveBtn")
+        static let backward = UIImage(named: "Backward")
     }
     
     struct TapBarImages {

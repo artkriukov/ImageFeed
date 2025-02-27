@@ -14,7 +14,7 @@ protocol ImagesTableViewDelegate: AnyObject {
 final class ImagesTableView: UIView {
     // MARK: - Private Properties
     private var photosName = Array(0..<20).map { "\($0)" }
-    weak var selectionDelegate: ImagesTableViewDelegate?
+    weak var delegate: ImagesTableViewDelegate?
 
     // MARK: - UI
     private lazy var imagesTableView: UITableView = {
@@ -86,7 +86,7 @@ extension ImagesTableView: UITableViewDelegate {
         let imageName = photosName[indexPath.row]
         
         if let selectedImage = UIImage(named: imageName) ?? UIImage(named: "0") {
-            selectionDelegate?.didSelectImage(selectedImage)
+            delegate?.didSelectImage(selectedImage)
         }
     }
     
