@@ -34,6 +34,7 @@ final class SingleImageView: UIView {
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
+    
     private(set) lazy var singleImage: UIImageView = {
         let element = UIImageView()
         element.image = UIImage(named: "0")
@@ -46,6 +47,13 @@ final class SingleImageView: UIView {
         let element = UIButton(type: .custom)
         element.setImage(K.Images.backward, for: .normal)
         element.addTarget(self, action: #selector(backwardTapped), for: .touchUpInside)
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
+    }()
+    
+    private lazy var sharingButton: UIButton = {
+        let element = UIButton(type: .custom)
+        element.setImage(K.Images.sharingImage, for: .normal)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -93,6 +101,7 @@ private extension SingleImageView {
         addSubview(scrollView)
         scrollView.addSubview(singleImage)
         addSubview(backwardButton)
+        addSubview(sharingButton)
     }
     
     func setupConstraints() {
@@ -108,7 +117,10 @@ private extension SingleImageView {
             backwardButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 11),
             backwardButton.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 9),
             backwardButton.widthAnchor.constraint(equalToConstant: 24),
-            backwardButton.heightAnchor.constraint(equalToConstant: 24)
+            backwardButton.heightAnchor.constraint(equalToConstant: 24),
+            
+            sharingButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            sharingButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -17),
         ])
     }
 }
