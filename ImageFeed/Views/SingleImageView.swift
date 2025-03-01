@@ -9,6 +9,7 @@ import UIKit
 
 protocol SingleImageViewDelegate: AnyObject {
     func didTapCloseButton()
+    func didTapShareButton(image: UIImage)
 }
 
 
@@ -54,6 +55,7 @@ final class SingleImageView: UIView {
     private lazy var sharingButton: UIButton = {
         let element = UIButton(type: .custom)
         element.setImage(K.Images.sharingImage, for: .normal)
+        element.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -74,6 +76,11 @@ final class SingleImageView: UIView {
     
     @objc private func backwardTapped() {
         delegate?.didTapCloseButton()
+    }
+    
+    @objc private func shareTapped() {
+        guard let image = singleImage.image else { return }
+        delegate?.didTapShareButton(image: image)
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {

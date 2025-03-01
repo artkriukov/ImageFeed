@@ -26,6 +26,11 @@ final class SingleImageViewController: UIViewController {
 }
 
 extension SingleImageViewController: SingleImageViewDelegate {
+    func didTapShareButton(image: UIImage) {
+        let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(activityViewController, animated: true)
+    }
+    
     func didTapCloseButton() {
         self.dismiss(animated: true)
     }
