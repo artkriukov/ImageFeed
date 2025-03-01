@@ -118,6 +118,8 @@ private extension SingleImageView {
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             
+            singleImage.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            singleImage.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
             singleImage.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             singleImage.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
             
