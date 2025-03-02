@@ -53,6 +53,7 @@ final class ProfileView: UIView {
     private lazy var contentUserLabel: UILabel = {
         let element = UILabel()
         element.text = "@ekaterina_nov"
+        element.numberOfLines = 0
         element.font = .systemFont(ofSize: 13, weight: .regular)
         element.textColor = K.Colors.secondaryTextColor
         element.translatesAutoresizingMaskIntoConstraints = false
