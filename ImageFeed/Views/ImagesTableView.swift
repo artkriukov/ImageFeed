@@ -7,22 +7,29 @@
 
 import UIKit
 
+protocol ImagesTableViewDelegate: AnyObject {
+    func didSelectImage(_ image: UIImage)
+}
+
 final class ImagesTableView: UIView {
     // MARK: - Private Properties
     private var photosName = Array(0..<20).map { "\($0)" }
+    weak var delegate: ImagesTableViewDelegate?
 
+    // MARK: - UI
     private lazy var imagesTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.separatorStyle = .none
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
-        tableView.backgroundColor = UIColor(named: "BackgroundColor")
-        tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+        let element = UITableView()
+        element.separatorStyle = .none
+        element.dataSource = self
+        element.delegate = self
+        element.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        element.backgroundColor = K.Colors.backgroundColor
+        element.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
     }()
     
+    // MARK: - Init
     init() {
         super.init(frame: .zero)
         setupViews()
@@ -75,12 +82,21 @@ extension ImagesTableView: UITableViewDelegate {
         return image.size.height * scale + imageInsets.top + imageInsets.bottom
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let imageName = photosName[indexPath.row]
+        
+        if let selectedImage = UIImage(named: imageName) ?? UIImage(named: "0") {
+            delegate?.didSelectImage(selectedImage)
+        }
+    }
+    
 }
 
 // MARK: - Set Views and Setup Constraints
 private extension ImagesTableView {
     func setupViews() {
         addSubview(imagesTableView)
+        
     }
     
     func setupConstraints() {

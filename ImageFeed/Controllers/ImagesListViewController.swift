@@ -9,12 +9,24 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
+    // MARK: - Private Properties
     private let tableView = ImagesTableView()
     
+    // MARK: - Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = tableView
-        view.backgroundColor = UIColor(named: "BackgroundColor")
+        
+        tableView.delegate = self
+        view.backgroundColor = K.Colors.backgroundColor
     }
 }
 
+extension ImagesListViewController: ImagesTableViewDelegate {
+    func didSelectImage(_ image: UIImage) {
+        let singleImageVC = SingleImageViewController()
+        singleImageVC.singleImageView.singleImage.image = image
+        singleImageVC.modalPresentationStyle = .fullScreen
+        present(singleImageVC, animated: true)
+    }
+}

@@ -13,11 +13,36 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
+        
         guard let windowScene = scene as? UIWindowScene else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = ImagesListViewController()
+        let tapBarController = UITabBarController()
+        
+        let imagesListVC = ImagesListViewController()
+        imagesListVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.editorialActive, tag: 0)
+        
+        let profileVC = ProfileViewController()
+        profileVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.profileActive, tag: 1)
+        
+        tapBarController.viewControllers = [imagesListVC, profileVC]
+        
+        setupTabBarAppearance()
+        
+        window?.rootViewController = tapBarController
         window?.makeKeyAndVisible()
+    }
+    
+    private func setupTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = K.Colors.backgroundColor
+        
+        UITabBar.appearance().standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+        
+        UITabBar.appearance().tintColor = K.Colors.mainTextColor
     }
 
 }

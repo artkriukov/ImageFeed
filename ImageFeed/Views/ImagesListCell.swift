@@ -15,27 +15,27 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - UI Elements
     private let mainImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 16
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+        let element = UIImageView()
+        element.contentMode = .scaleAspectFill
+        element.clipsToBounds = true
+        element.layer.cornerRadius = 16
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
     }()
     
     private let favoriteButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "NoActiveBtn"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+        let element = UIButton(type: .custom)
+        element.setImage(K.Images.noActiveButton, for: .normal)
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
     }()
     
     private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor(named: "TextColor")
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+        let element = UILabel()
+        element.font = .systemFont(ofSize: 13, weight: .regular)
+        element.textColor = K.Colors.mainTextColor
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
     }()
 
     // MARK: - Init
@@ -56,7 +56,7 @@ final class ImagesListCell: UITableViewCell {
     func configure(with photoName: String, isLiked: Bool, date: String) {
         mainImage.image = UIImage(named: photoName)
         dateLabel.text = date
-        let likeImage = isLiked ? UIImage(named: "NoActiveBtn") : UIImage(named: "ActiveBtn")
+        let likeImage = isLiked ? K.Images.noActiveButton : K.Images.activeButton
         self.selectionStyle = .none
         favoriteButton.setImage(likeImage, for: .normal)
     }
