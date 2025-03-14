@@ -84,7 +84,7 @@ final class ProfileView: UIView {
 // MARK: - Set Views and Setup Constraints
 private extension ProfileView {
     func setupViews() {
-        backgroundColor = K.Colors.backgroundColor
+        backgroundColor = K.Colors.blackColor
         
         addSubview(userStackView)
         userStackView.addArrangedSubview(userImage)

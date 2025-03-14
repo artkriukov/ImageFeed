@@ -23,7 +23,7 @@ final class ImagesTableView: UIView {
         element.dataSource = self
         element.delegate = self
         element.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
-        element.backgroundColor = K.Colors.backgroundColor
+        element.backgroundColor = K.Colors.blackColor
         element.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element

@@ -104,7 +104,7 @@ final class SingleImageView: UIView {
 // MARK: - Setup Views and Setup Constraints
 private extension SingleImageView {
     func setupViews() {
-        backgroundColor = K.Colors.backgroundColor
+        backgroundColor = K.Colors.blackColor
         addSubview(scrollView)
         scrollView.addSubview(singleImage)
         addSubview(backwardButton)

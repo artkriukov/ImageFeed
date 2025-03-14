@@ -28,14 +28,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         setupTabBarAppearance()
         
-        window?.rootViewController = tapBarController
+        window?.rootViewController = AuthViewController()
         window?.makeKeyAndVisible()
     }
     
     private func setupTabBarAppearance() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = K.Colors.backgroundColor
+        appearance.backgroundColor = K.Colors.blackColor
         
         UITabBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {
