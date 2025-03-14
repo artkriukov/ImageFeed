@@ -7,8 +7,15 @@
 
 import UIKit
 
+protocol AuthViewDelegate: AnyObject {
+    func pushToUIWebView()
+}
+
 final class AuthView: UIView {
 
+    // MARK: - Private Properties
+    weak var delegate: AuthViewDelegate?
+    
     // MARK: - UI
     private lazy var logoImageView: UIImageView = {
         let element = UIImageView()
@@ -25,6 +32,11 @@ final class AuthView: UIView {
         element.backgroundColor = .white
         element.layer.cornerRadius = 16
         element.translatesAutoresizingMaskIntoConstraints = false
+        element.addTarget(
+                self,
+                action: #selector(logInButtonTapped),
+                for: .touchUpInside
+            )
         return element
     }()
     
@@ -37,6 +49,11 @@ final class AuthView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Actions
+    @objc func logInButtonTapped() {
+        delegate?.pushToUIWebView()
     }
 }
 
