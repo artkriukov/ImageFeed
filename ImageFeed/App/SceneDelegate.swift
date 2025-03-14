@@ -28,7 +28,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         setupTabBarAppearance()
         
-        window?.rootViewController = AuthViewController()
+        window?.rootViewController = UINavigationController(rootViewController: AuthViewController())
         window?.makeKeyAndVisible()
     }
     
