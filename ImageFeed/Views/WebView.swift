@@ -12,7 +12,7 @@ final class WebView: UIView {
     
     // MARK: - UI
     
-    private lazy var progressView: UIProgressView = {
+    lazy var progressView: UIProgressView = {
         let element = UIProgressView()
         element.progressTintColor = K.Colors.blackColor
         element.progress = 0.5
@@ -36,17 +36,17 @@ final class WebView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
+    } 
     
     // MARK: - Actions
-    
+
 }
 
 // MARK: - Set Views and Setup Constraints
 private extension WebView {
     func setupViews() {
         addSubview(wkWebView)
-        wkWebView.addSubview(progressView)
+        addSubview(progressView)
     }
     
     func setupConstraints() {

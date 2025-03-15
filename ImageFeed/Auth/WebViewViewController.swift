@@ -32,7 +32,18 @@ final class WebViewViewController: UIViewController {
         webView.wkWebView.navigationDelegate = self
         
         loadAuthView()
+        
+        webView.wkWebView.addObserver(
+                self,
+                forKeyPath: #keyPath(WKWebView.estimatedProgress),
+                options: .new,
+                context: nil
+            )
+        
+        updateProgress()
     }
+    
+
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -40,6 +51,28 @@ final class WebViewViewController: UIViewController {
         if self.isMovingFromParent {
             delegate?.webViewViewControllerDidCancel(self)
         }
+        
+        webView.wkWebView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
+    }
+    
+    // MARK: - Methods
+    
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            updateProgress()
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+
+    private func updateProgress() {
+        webView.progressView.progress = Float(webView.wkWebView.estimatedProgress)
+        webView.progressView.isHidden = fabs(webView.wkWebView.estimatedProgress - 1.0) <= 0.0001
     }
     
     // MARK: - Private Properties
