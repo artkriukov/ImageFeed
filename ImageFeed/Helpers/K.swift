@@ -23,6 +23,10 @@ struct K {
         static let unsplashLogo = UIImage(named: "UnsplashLogo")
     }
     
+    struct NavBar {
+        static let backButtonImage = UIImage(named: "nav_back_button")
+    }
+    
     struct TapBarImages {
         static let editorialActive = UIImage(named: "tab_editorial_active")
         static let profileActive = UIImage(named: "tab_profile_active")
