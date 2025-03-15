@@ -68,23 +68,24 @@ private extension AuthView {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-                logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-                logoImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-                logoImageView.widthAnchor.constraint(equalToConstant: 60),
-                
-                logInButton.heightAnchor.constraint(equalToConstant: 48),
-                logInButton.bottomAnchor.constraint(
-                    equalTo: safeAreaLayoutGuide.bottomAnchor,
-                    constant: -90
-                ),
-                logInButton.leadingAnchor.constraint(
-                    equalTo: safeAreaLayoutGuide.leadingAnchor,
-                    constant: 16
-                ),
-                logInButton.trailingAnchor.constraint(
-                        equalTo: safeAreaLayoutGuide.trailingAnchor,
-                        constant: -16
-                    ),
-            ])
+            
+            logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 60),
+            
+            logInButton.heightAnchor.constraint(equalToConstant: 48),
+            logInButton.bottomAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.bottomAnchor,
+                constant: -90
+            ),
+            logInButton.leadingAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.leadingAnchor,
+                constant: 16
+            ),
+            logInButton.trailingAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.trailingAnchor,
+                constant: -16
+            ),
+        ])
     }
 }

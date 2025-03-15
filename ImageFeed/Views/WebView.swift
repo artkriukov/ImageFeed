@@ -12,6 +12,14 @@ final class WebView: UIView {
     
     // MARK: - UI
     
+    private lazy var progressView: UIProgressView = {
+        let element = UIProgressView()
+        element.progressTintColor = K.Colors.blackColor
+        element.progress = 0.5
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
+    }()
+    
     lazy var wkWebView: WKWebView = {
         let element = WKWebView()
         element.backgroundColor = .white
@@ -38,10 +46,17 @@ final class WebView: UIView {
 private extension WebView {
     func setupViews() {
         addSubview(wkWebView)
+        wkWebView.addSubview(progressView)
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
+            
+            progressView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            progressView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 2),
+            
             wkWebView.topAnchor.constraint(equalTo: topAnchor),
             wkWebView.leadingAnchor.constraint(equalTo: leadingAnchor),
             wkWebView.trailingAnchor.constraint(equalTo: trailingAnchor),
