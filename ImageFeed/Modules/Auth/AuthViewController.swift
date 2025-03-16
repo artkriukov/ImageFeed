@@ -7,6 +7,10 @@
 
 import UIKit
 
+enum AuthViewConstants {
+    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/token"
+}
+
 final class AuthViewController: UIViewController {
     
     // MARK: - Private Properties
@@ -28,6 +32,30 @@ final class AuthViewController: UIViewController {
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = K.NavBar.backButtonImage
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = K.Colors.blackColor
+    }
+    
+    // FIXME: - Request ???
+    func makeOAuthTokenRequest(code: String) -> URLRequest {
+        let urlString = AuthViewConstants.unsplashAuthorizeURLString
+        
+        guard var urlComponents = URLComponents(string: urlString) else {
+            fatalError("Неверный URL")
+        }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "client_secret", value: Constants.secretKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "grant_type", value: "authorization_code")
+        ]
+        
+        guard let url = urlComponents.url else { fatalError("Неверный URL") }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        print(request)
+        return request
     }
 
 }
@@ -53,6 +81,4 @@ extension AuthViewController: WebViewViewControllerDelegate {
         print("Авторизация отменена")
         vc.dismiss(animated: true)
     }
-
-    
 }
