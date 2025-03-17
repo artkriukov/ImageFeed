@@ -34,16 +34,16 @@ final class WebViewViewController: UIViewController {
         loadAuthView()
         
         webView.wkWebView.addObserver(
-                self,
-                forKeyPath: #keyPath(WKWebView.estimatedProgress),
-                options: .new,
-                context: nil
-            )
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+            options: .new,
+            context: nil
+        )
         
         updateProgress()
     }
     
-
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -69,7 +69,7 @@ final class WebViewViewController: UIViewController {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-
+    
     private func updateProgress() {
         webView.progressView.progress = Float(webView.wkWebView.estimatedProgress)
         webView.progressView.isHidden = fabs(webView.wkWebView.estimatedProgress - 1.0) <= 0.0001

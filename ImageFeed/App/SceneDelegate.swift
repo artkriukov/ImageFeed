@@ -8,28 +8,22 @@
 import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
-
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    
+    func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         
         guard let windowScene = scene as? UIWindowScene else { return }
         window = UIWindow(windowScene: windowScene)
-        let tapBarController = UITabBarController()
         
-        let imagesListVC = ImagesListViewController()
-        imagesListVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.editorialActive, tag: 0)
-        
-        let profileVC = ProfileViewController()
-        profileVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.profileActive, tag: 1)
-        
-        tapBarController.viewControllers = [imagesListVC, profileVC]
+        window?.rootViewController = SplashScreenViewController()
+        window?.makeKeyAndVisible()
         
         setupTabBarAppearance()
-        
-        window?.rootViewController = UINavigationController(rootViewController: AuthViewController())
-        window?.makeKeyAndVisible()
     }
     
     private func setupTabBarAppearance() {
@@ -44,6 +38,4 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         UITabBar.appearance().tintColor = K.Colors.mainTextColor
     }
-
 }
-

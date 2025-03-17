@@ -11,10 +11,16 @@ enum AuthViewConstants {
     static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/token"
 }
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func didAuthenticate(_ vc: AuthViewController)
+}
+
 final class AuthViewController: UIViewController {
     
     // MARK: - Private Properties
     private let authView = AuthView()
+    
+    weak var delegate: AuthViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +58,9 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success(let token):
                 print("Токен успешно получен: \(token)")
-                // Переход на следующий экран или обновление UI
+                DispatchQueue.main.async {
+                    self.delegate?.didAuthenticate(self)
+                }
             case .failure(let error):
                 print("Ошибка при получении токена: \(error.localizedDescription)")
             }
