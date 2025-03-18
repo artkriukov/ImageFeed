@@ -21,7 +21,7 @@ final class OAuth2Service {
     private let decoder = JSONDecoder()
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let urlRequest = makeOAuthTokenRequest(code: code)
+        guard let urlRequest = makeOAuthTokenRequest(code: code) else { return }
         
         let task = URLSession.shared.data(for: urlRequest) { result in
             switch result {
@@ -43,11 +43,12 @@ final class OAuth2Service {
         task.resume()
     }
     
-    func makeOAuthTokenRequest(code: String) -> URLRequest {
+    func makeOAuthTokenRequest(code: String) -> URLRequest? {
         let urlString = AuthViewConstants.unsplashAuthorizeURLString
         
         guard var urlComponents = URLComponents(string: urlString) else {
-            fatalError("Неверный URL")
+            assertionFailure("Неверный URL: \(urlString)")
+            return nil
         }
         
         urlComponents.queryItems = [
@@ -58,7 +59,10 @@ final class OAuth2Service {
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
         
-        guard let url = urlComponents.url else { fatalError("Неверный URL") }
+        guard let url = urlComponents.url else {
+            assertionFailure("Неверный URL: \(urlComponents)")
+            return nil
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

@@ -51,7 +51,7 @@ final class ImagesTableView: UIView {
 // MARK: - UITableViewDataSource
 extension ImagesTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        photosName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

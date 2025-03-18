@@ -136,6 +136,6 @@ private extension SingleImageView {
 
 extension SingleImageView: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return singleImage
+        singleImage
     }
 }
