@@ -7,9 +7,9 @@
 
 import UIKit
 
-struct K {
+struct UIConstants {
     struct Colors {
-        static let backgroundColor = UIColor(named: "BackgroundColor")
+        static let blackColor = UIColor(named: "BackgroundColor")
         static let secondaryTextColor = UIColor(named: "SecondaryText")
         static let mainTextColor = UIColor(named: "MainTextColor")
     }
@@ -20,6 +20,11 @@ struct K {
         static let activeButton = UIImage(named: "ActiveBtn")
         static let backward = UIImage(named: "Backward")
         static let sharingImage = UIImage(named: "Sharing")
+        static let unsplashLogo = UIImage(named: "UnsplashLogo")
+    }
+    
+    struct NavBar {
+        static let backButtonImage = UIImage(named: "nav_back_button")
     }
     
     struct TapBarImages {
