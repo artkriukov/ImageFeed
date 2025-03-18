@@ -46,7 +46,7 @@ final class SingleImageView: UIView {
     
     private lazy var backwardButton: UIButton = {
         let element = UIButton(type: .custom)
-        element.setImage(K.Images.backward, for: .normal)
+        element.setImage(UIConstants.Images.backward, for: .normal)
         element.addTarget(self, action: #selector(backwardTapped), for: .touchUpInside)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
@@ -54,7 +54,7 @@ final class SingleImageView: UIView {
     
     private lazy var sharingButton: UIButton = {
         let element = UIButton(type: .custom)
-        element.setImage(K.Images.sharingImage, for: .normal)
+        element.setImage(UIConstants.Images.sharingImage, for: .normal)
         element.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
@@ -104,7 +104,7 @@ final class SingleImageView: UIView {
 // MARK: - Setup Views and Setup Constraints
 private extension SingleImageView {
     func setupViews() {
-        backgroundColor = K.Colors.blackColor
+        backgroundColor = UIConstants.Colors.blackColor
         addSubview(scrollView)
         scrollView.addSubview(singleImage)
         addSubview(backwardButton)

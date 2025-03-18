@@ -14,7 +14,7 @@ final class WebView: UIView {
     
     lazy var progressView: UIProgressView = {
         let element = UIProgressView()
-        element.progressTintColor = K.Colors.blackColor
+        element.progressTintColor = UIConstants.Colors.blackColor
         element.progress = 0.5
         element.translatesAutoresizingMaskIntoConstraints = false
         return element

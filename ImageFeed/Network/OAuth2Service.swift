@@ -18,6 +18,31 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     private init() {}
     
+    private let decoder = JSONDecoder()
+    
+    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let urlRequest = makeOAuthTokenRequest(code: code)
+        
+        let task = URLSession.shared.data(for: urlRequest) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let response = try self.decoder.decode(OAuthTokenResponseBody.self,from: data)
+                    OAuth2TokenStorage.shared.token = response.accessToken
+                    completion(.success(response.accessToken))
+                } catch {
+                    print("Ошибка декодирования: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                print("Сетевая ошибка: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
     func makeOAuthTokenRequest(code: String) -> URLRequest {
         let urlString = AuthViewConstants.unsplashAuthorizeURLString
         
@@ -39,30 +64,6 @@ final class OAuth2Service {
         request.httpMethod = "POST"
         print(request)
         return request
-    }
-    
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let urlRequest = makeOAuthTokenRequest(code: code)
-        
-        let task = URLSession.shared.data(for: urlRequest) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    let response = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    OAuth2TokenStorage.shared.token = response.accessToken 
-                    completion(.success(response.accessToken))
-                } catch {
-                    print("Ошибка декодирования: \(error.localizedDescription)")
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                print("Сетевая ошибка: \(error.localizedDescription)")
-                completion(.failure(error))
-            }
-        }
-        
-        task.resume()
     }
 }
 

@@ -7,10 +7,10 @@
 
 import UIKit
 
-class SplashScreenViewController: UIViewController {
+final class SplashScreenViewController: UIViewController {
     
     // MARK: - Private Properties
-    private let storage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage.shared
     
     // MARK: - UI
     private lazy var logoImageView: UIImageView = {
@@ -32,7 +32,7 @@ class SplashScreenViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = storage.token {
+        if let _ = storage.token {
             switchToTabBarController()
         } else {
             showAuthViewController()
@@ -44,10 +44,10 @@ class SplashScreenViewController: UIViewController {
         let tabBarController = UITabBarController()
         
         let imagesListVC = ImagesListViewController()
-        imagesListVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.editorialActive, tag: 0)
+        imagesListVC.tabBarItem = UITabBarItem(title: nil, image: UIConstants.TapBarImages.editorialActive, tag: 0)
         
         let profileVC = ProfileViewController()
-        profileVC.tabBarItem = UITabBarItem(title: nil, image: K.TapBarImages.profileActive, tag: 1)
+        profileVC.tabBarItem = UITabBarItem(title: nil, image: UIConstants.TapBarImages.profileActive, tag: 1)
         
         tabBarController.viewControllers = [imagesListVC, profileVC]
         
@@ -70,7 +70,7 @@ class SplashScreenViewController: UIViewController {
 // MARK: - Setup Views and Setup Constraints
 private extension SplashScreenViewController {
     func setupViews() {
-        view.backgroundColor = K.Colors.blackColor
+        view.backgroundColor = UIConstants.Colors.blackColor
         
         view.addSubview(logoImageView)
     }

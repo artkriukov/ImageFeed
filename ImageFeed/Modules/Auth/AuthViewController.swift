@@ -34,10 +34,10 @@ final class AuthViewController: UIViewController {
     // MARK: - Private Methods
     
     private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = K.NavBar.backButtonImage
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = K.NavBar.backButtonImage
+        navigationController?.navigationBar.backIndicatorImage = UIConstants.NavBar.backButtonImage
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIConstants.NavBar.backButtonImage
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = K.Colors.blackColor
+        navigationItem.backBarButtonItem?.tintColor = UIConstants.Colors.blackColor
     }
 }
 
@@ -45,7 +45,7 @@ extension AuthViewController: AuthViewDelegate {
     func pushToUIWebView() {
         let webViewController = WebViewViewController()
         webViewController.delegate = self
-        self.navigationController?.pushViewController(webViewController, animated: true)
+        navigationController?.pushViewController(webViewController, animated: true)
     }
 }
 
@@ -54,7 +54,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
         _ vc: WebViewViewController,
         didAuthenticateWithCode code: String
     ) {
-        OAuth2Service.shared.fetchOAuthToken(code: code) { result in
+        OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let token):
                 print("Токен успешно получен: \(token)")

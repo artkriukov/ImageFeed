@@ -12,14 +12,14 @@ protocol AuthViewDelegate: AnyObject {
 }
 
 final class AuthView: UIView {
-
+    
     // MARK: - Private Properties
     weak var delegate: AuthViewDelegate?
     
     // MARK: - UI
     private lazy var logoImageView: UIImageView = {
         let element = UIImageView()
-        element.image = K.Images.unsplashLogo
+        element.image = UIConstants.Images.unsplashLogo
         element.contentMode = .scaleAspectFit
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
@@ -28,15 +28,15 @@ final class AuthView: UIView {
     private lazy var logInButton: UIButton = {
         let element = UIButton(type: .system)
         element.setTitle("Войти", for: .normal)
-        element.tintColor = K.Colors.blackColor
+        element.tintColor = UIConstants.Colors.blackColor
         element.backgroundColor = .white
         element.layer.cornerRadius = 16
         element.translatesAutoresizingMaskIntoConstraints = false
         element.addTarget(
-                self,
-                action: #selector(logInButtonTapped),
-                for: .touchUpInside
-            )
+            self,
+            action: #selector(logInButtonTapped),
+            for: .touchUpInside
+        )
         return element
     }()
     
@@ -52,7 +52,7 @@ final class AuthView: UIView {
     }
     
     // MARK: - Actions
-    @objc func logInButtonTapped() {
+    @objc private func logInButtonTapped() {
         delegate?.pushToUIWebView()
     }
 }
@@ -60,7 +60,7 @@ final class AuthView: UIView {
 // MARK: - Set Views and Setup Constraints
 private extension AuthView {
     func setupViews() {
-        backgroundColor = K.Colors.blackColor
+        backgroundColor = UIConstants.Colors.blackColor
         
         addSubview(logoImageView)
         addSubview(logInButton)

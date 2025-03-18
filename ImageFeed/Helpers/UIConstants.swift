@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct K {
+struct UIConstants {
     struct Colors {
         static let blackColor = UIColor(named: "BackgroundColor")
         static let secondaryTextColor = UIColor(named: "SecondaryText")
