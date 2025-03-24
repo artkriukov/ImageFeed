@@ -18,7 +18,7 @@ final class ImagesListViewController: UIViewController {
         self.view = tableView
         
         tableView.delegate = self
-        view.backgroundColor = K.Colors.backgroundColor
+        view.backgroundColor = UIConstants.Colors.blackColor
     }
 }
 
