@@ -75,35 +75,22 @@ final class ProfileView: UIView {
         setupViews()
         setupConstraints()
         
-        loadProfile()
+        updateProfileDetails()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Action
-    
-    private func loadProfile() {
-        guard let token = OAuth2TokenStorage.shared.token else { return }
-        
-        ProfileService.shared.fetchProfile(token) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let profile):
-                    self?.updateUI(with: profile)
-                case .failure(let error):
-                    print("Ошибка загрузки профиля: \(error)")
-                }
-            }
-        }
+    // MARK: - Private Properties
+    private func updateProfileDetails() {
+        if let profile = ProfileService.shared.profile {
+            nameLabel.text = profile.name
+            contentUserLabel.text = profile.loginName
+            descrUserLabel.text = profile.bio ?? "Нет описания"
+        } 
     }
     
-    private func updateUI(with profile: Profile) {
-        nameLabel.text = profile.name
-        contentUserLabel.text = profile.loginName
-        descrUserLabel.text = profile.bio
-    }
 }
 
 // MARK: - Set Views and Setup Constraints
