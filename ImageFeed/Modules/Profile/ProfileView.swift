@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProfileView: UIView {
-
+    
     // MARK: - UI
     private lazy var userStackView: UIStackView = {
         let element = UIStackView()
@@ -41,7 +41,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var nameLabel: UILabel = {
+    private(set) lazy var nameLabel: UILabel = {
         let element = UILabel()
         element.text = "Екатерина Новикова"
         element.font = .systemFont(ofSize: 23, weight: .bold)
@@ -50,7 +50,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var contentUserLabel: UILabel = {
+    private(set) lazy var contentUserLabel: UILabel = {
         let element = UILabel()
         element.text = "@ekaterina_nov"
         element.numberOfLines = 0
@@ -60,7 +60,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var descrUserLabel: UILabel = {
+    private(set) lazy var descrUserLabel: UILabel = {
         let element = UILabel()
         element.text = "Hello, world!"
         element.font = .systemFont(ofSize: 13, weight: .regular)
@@ -74,10 +74,35 @@ final class ProfileView: UIView {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
+        
+        loadProfile()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Action
+    
+    private func loadProfile() {
+        guard let token = OAuth2TokenStorage.shared.token else { return }
+        
+        ProfileService.shared.fetchProfile(token) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    self?.updateUI(with: profile)
+                case .failure(let error):
+                    print("Ошибка загрузки профиля: \(error)")
+                }
+            }
+        }
+    }
+    
+    private func updateUI(with profile: Profile) {
+        nameLabel.text = profile.name
+        contentUserLabel.text = profile.loginName
+        descrUserLabel.text = profile.bio
     }
 }
 

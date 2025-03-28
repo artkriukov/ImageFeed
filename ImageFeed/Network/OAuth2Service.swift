@@ -86,12 +86,13 @@ final class OAuth2Service {
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
+        print(code)
         
         guard let url = urlComponents.url else {
             assertionFailure("Неверный URL: \(urlComponents)")
             return nil
         }
-        
+        print(url)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         print(request)
