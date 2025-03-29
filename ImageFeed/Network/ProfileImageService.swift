@@ -11,6 +11,8 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     private init() {}
     
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
@@ -41,6 +43,11 @@ final class ProfileImageService {
                         if let smallImageURL = profileResult.profileImage?.small {
                             self.avatarURL = smallImageURL
                             completion(.success(smallImageURL))
+                            NotificationCenter.default
+                                .post(
+                                    name: ProfileImageService.didChangeNotification,
+                                    object: self,
+                                    userInfo: ["URL": smallImageURL])
                         } else {
                             completion(.failure(NetworkError.invalidRequest))
                         }
