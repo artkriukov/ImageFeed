@@ -12,6 +12,7 @@ final class SplashScreenViewController: UIViewController {
     // MARK: - Private Properties
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     // MARK: - UI
     private lazy var logoImageView: UIImageView = {
@@ -28,14 +29,14 @@ final class SplashScreenViewController: UIViewController {
         
         setupViews()
         setupConstraints()
-
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if let token = storage.token {
-            fetchProfile(token)
+            fetchProfileAndAvatar(token: token)
         } else {
             showAuthViewController()
         }
@@ -68,7 +69,7 @@ final class SplashScreenViewController: UIViewController {
         present(navigationController, animated: true, completion: nil)
     }
     
-
+    
 }
 
 // MARK: - Setup Views and Setup Constraints
@@ -92,30 +93,40 @@ extension SplashScreenViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
         
-        guard let token = storage.token else {
-            return
-        }
+        guard let token = storage.token else { return }
         
-        fetchProfile(token)
+        fetchProfileAndAvatar(token: token)
     }
     
-    private func fetchProfile(_ token: String) {
+    private func fetchProfileAndAvatar(token: String) {
         UIBlockingProgressHUD.show()
         
         profileService.fetchProfile(token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             
-            guard let self else { return }
+            guard let self = self else { return }
             
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
+            switch result {
+            case .success(let profile):
+                
+                self.fetchProfileImage(username: profile.username)
+                
+                DispatchQueue.main.async {
                     self.switchToTabBarController()
-                case .failure(let error):
-                    print("Ошибка загрузки профиля \(error.localizedDescription)")
-                    break
+                }
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print(error.localizedDescription)
                 }
             }
+        }
+    }
+    
+    private func fetchProfileImage(username: String) {
+        
+        profileImageService.fetchProfileImageURL(username: username) { _ in
+        
         }
     }
 }
