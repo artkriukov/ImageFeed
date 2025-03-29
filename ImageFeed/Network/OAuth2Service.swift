@@ -7,14 +7,6 @@
 
 import Foundation
 
-enum NetworkError: Error {
-    case httpStatusCode(Int)
-    case urlRequestError(Error)
-    case urlSessionError
-    case requestInProgress
-    case invalidRequest
-}
-
 final class OAuth2Service {
     
     static let shared = OAuth2Service()
@@ -30,37 +22,34 @@ final class OAuth2Service {
         DispatchQueue.main.async {
             if let task = self.task {
                 if self.lastCode == code {
-                    completion(.failure(NetworkError.requestInProgress))
+                    let error = NetworkError.requestInProgress
+                    print("[OAuth2Service.fetchOAuthToken]: \(error) - код уже в обработке: \(code)")
+                    completion(.failure(error))
                     return
                 } else {
                     task.cancel()
                 }
             }
-            
-            self.lastCode = code
-            
             guard let urlRequest = self.makeOAuthTokenRequest(code: code) else {
-                completion(.failure(NetworkError.invalidRequest))
+                let error = NetworkError.invalidRequest
+                print("[OAuth2Service.fetchOAuthToken]: \(error) - неверный запрос для кода: \(code)")
+                completion(.failure(error))
                 return
             }
             
-            let task = self.urlSession.data(for: urlRequest) { [weak self] result in
+            let task = self.urlSession.objectTask(for: urlRequest) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
                 DispatchQueue.main.async {
-                    guard let self = self else { return }
+                    guard let self else { return }
                     
                     self.task = nil
                     self.lastCode = nil
                     
                     switch result {
-                    case .success(let data):
-                        do {
-                            let response = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
-                            OAuth2TokenStorage.shared.token = response.accessToken
-                            completion(.success(response.accessToken))
-                        } catch {
-                            completion(.failure(error))
-                        }
+                    case .success(let response):
+                        OAuth2TokenStorage.shared.token = response.accessToken
+                        completion(.success(response.accessToken))
                     case .failure(let error):
+                        print("[OAuth2Service.fetchOAuthToken]: \(error) - код: \(code)")
                         completion(.failure(error))
                     }
                 }
@@ -100,33 +89,3 @@ final class OAuth2Service {
     }
 }
 
-
-extension URLSession {
-    func data(
-        for request: URLRequest,
-        completion: @escaping (Result<Data, Error>) -> Void
-    ) -> URLSessionTask {
-        
-        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
-        let task = dataTask(with: request, completionHandler: { data, response, error in
-            if let data = data, let response = response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
-                    fulfillCompletionOnTheMainThread(.success(data))
-                } else {
-                    fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
-                }
-            } else if let error = error {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
-            } else {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
-            }
-        })
-        
-        return task
-    }
-}

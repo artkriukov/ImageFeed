@@ -24,33 +24,29 @@ final class ProfileService {
         }
         
         guard let request = makeProfileRequest(token: token) else {
-            completion(.failure(NetworkError.invalidRequest))
+            let error = NetworkError.invalidRequest
+            print("[ProfileService.fetchProfile]: \(error) - токен: \(token)")
+            completion(.failure(error))
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             DispatchQueue.main.async {
-                guard let self else { return }
+                guard let self = self else { return }
                 
                 switch result {
-                case .success(let data):
-                    do {
-                        let decoder = JSONDecoder()
-                        let profileResult = try decoder.decode(ProfileResult.self, from: data)
-                        
-                        let profile = Profile(
-                            username: profileResult.username,
-                            name: profileResult.firstName ?? "",
-                            loginName: "@\(profileResult.username)",
-                            bio: profileResult.bio
-                        )
-                        
-                        self.profile = profile
-                        completion(.success(profile))
-                    } catch {
-                        completion(.failure(error))
-                    }
+                case .success(let profileResult):
+                    let profile = Profile(
+                        username: profileResult.username,
+                        name: profileResult.firstName ?? "",
+                        loginName: "@\(profileResult.username)",
+                        bio: profileResult.bio
+                    )
+                    self.profile = profile
+                    completion(.success(profile))
+                    
                 case .failure(let error):
+                    print("[ProfileService.fetchProfile]: \(error) - токен: \(token)")
                     completion(.failure(error))
                 }
             }

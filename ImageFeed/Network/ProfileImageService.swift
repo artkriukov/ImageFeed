@@ -26,35 +26,33 @@ final class ProfileImageService {
         }
         
         guard let request = makeProfileImageRequest(username: username) else {
-            completion(.failure(NetworkError.invalidRequest))
+            let error = NetworkError.invalidRequest
+            print("[ProfileImageService.fetchProfileImageURL]: \(error) - username: \(username)")
+            completion(.failure(error))
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             DispatchQueue.main.async {
-                guard let self else { return }
+                guard let self = self else { return }
                 
                 switch result {
-                case .success(let data):
-                    do {
-                        let decoder = JSONDecoder()
-                        let profileResult = try decoder.decode(ProfileResult.self, from: data)
-                        
-                        if let smallImageURL = profileResult.profileImage?.small {
-                            self.avatarURL = smallImageURL
-                            completion(.success(smallImageURL))
-                            NotificationCenter.default
-                                .post(
-                                    name: ProfileImageService.didChangeNotification,
-                                    object: self,
-                                    userInfo: ["URL": smallImageURL])
-                        } else {
-                            completion(.failure(NetworkError.invalidRequest))
-                        }
-                    } catch {
+                case .success(let profileResult):
+                    if let smallImageURL = profileResult.profileImage?.small {
+                        self.avatarURL = smallImageURL
+                        completion(.success(smallImageURL))
+                        NotificationCenter.default.post(
+                            name: ProfileImageService.didChangeNotification,
+                            object: self,
+                            userInfo: ["URL": smallImageURL]
+                        )
+                    } else {
+                        let error = NetworkError.noImageURL
+                        print("[ProfileImageService.fetchProfileImageURL]: \(error) - username: \(username)")
                         completion(.failure(error))
                     }
                 case .failure(let error):
+                    print("[ProfileImageService.fetchProfileImageURL]: \(error) - username: \(username)")
                     completion(.failure(error))
                 }
             }
