@@ -34,7 +34,7 @@ final class ProfileImageService {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             DispatchQueue.main.async {
-                guard let self = self else { return }
+                guard let self else { return }
                 
                 switch result {
                 case .success(let profileResult):

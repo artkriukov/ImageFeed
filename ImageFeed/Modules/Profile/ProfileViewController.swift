@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -34,10 +35,22 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let url = URL(string: profileImageURL) else {
+            profileView.userImage.image = UIImage(named: "UserPhoto")
+            return
+        }
+        
+        
+        profileView.userImage.layer.cornerRadius = 35
+        
+        profileView.userImage.kf.setImage(
+            with: url,
+            placeholder: UIImage(named: "UserPhoto"),
+            options: [
+                .transition(.fade(0.3)),
+                .cacheOriginalImage
+            ]
+        )
     }
 }

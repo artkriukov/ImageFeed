@@ -18,10 +18,12 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var userImage: UIImageView = {
+    private(set) lazy var userImage: UIImageView = {
         let element = UIImageView()
         element.image = UIImage(named: "UserPhoto")
-        element.contentMode = .scaleAspectFit
+        element.contentMode = .scaleAspectFill
+        element.clipsToBounds = true
+        element.layer.cornerRadius = 35
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
