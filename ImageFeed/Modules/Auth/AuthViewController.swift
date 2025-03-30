@@ -40,6 +40,23 @@ final class AuthViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIConstants.Colors.blackColor
     }
+    
+    private func showAuthErrorAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        
+        let action = UIAlertAction(
+            title: "Ок",
+            style: .default
+        )
+        
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+    
 }
 
 extension AuthViewController: AuthViewDelegate {
@@ -70,6 +87,10 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 }
             case .failure(let error):
                 print("Ошибка при получении токена: \(error.localizedDescription)")
+                
+                DispatchQueue.main.async {
+                    self.showAuthErrorAlert()
+                }
             }
         }
         print("Код авторизации: \(code)")
