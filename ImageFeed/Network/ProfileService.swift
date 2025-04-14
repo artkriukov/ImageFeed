@@ -36,9 +36,12 @@ final class ProfileService {
                 
                 switch result {
                 case .success(let profileResult):
+                    let name = [profileResult.firstName, profileResult.lastName]
+                        .compactMap { $0 }
+                        .joined(separator: " ")
                     let profile = Profile(
                         username: profileResult.username,
-                        name: profileResult.firstName ?? "",
+                        name: name.isEmpty ? profileResult.username : name,
                         loginName: "@\(profileResult.username)",
                         bio: profileResult.bio
                     )

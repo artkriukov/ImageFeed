@@ -90,7 +90,7 @@ final class ProfileView: UIView {
             nameLabel.text = profile.name
             contentUserLabel.text = profile.loginName
             descrUserLabel.text = profile.bio ?? "Нет описания"
-        } 
+        }
     }
     
 }

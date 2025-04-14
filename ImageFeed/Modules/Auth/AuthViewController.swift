@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import ProgressHUD
 
 enum AuthViewConstants {
     static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/token"
@@ -43,13 +42,13 @@ final class AuthViewController: UIViewController {
     
     private func showAuthErrorAlert() {
         let alert = UIAlertController(
-            title: "Что-то пошло не так",
+            title: "Что-то пошло не так(",
             message: "Не удалось войти в систему",
             preferredStyle: .alert
         )
         
         let action = UIAlertAction(
-            title: "Ок",
+            title: "ОK",
             style: .default
         )
         
