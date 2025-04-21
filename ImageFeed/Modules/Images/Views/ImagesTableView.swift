@@ -67,6 +67,16 @@ extension ImagesTableView: UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
+    ) {
+        if indexPath.row + 1 == photosName.count {
+#warning("вызываем функцию fetchPhotosNextPage()")
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate
