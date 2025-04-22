@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProfileView: UIView {
-
+    
     // MARK: - UI
     private lazy var userStackView: UIStackView = {
         let element = UIStackView()
@@ -18,10 +18,12 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var userImage: UIImageView = {
+    private(set) lazy var userImage: UIImageView = {
         let element = UIImageView()
         element.image = UIImage(named: "UserPhoto")
-        element.contentMode = .scaleAspectFit
+        element.contentMode = .scaleAspectFill
+        element.clipsToBounds = true
+        element.layer.cornerRadius = 35
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -41,7 +43,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var nameLabel: UILabel = {
+    private(set) lazy var nameLabel: UILabel = {
         let element = UILabel()
         element.text = "Екатерина Новикова"
         element.font = .systemFont(ofSize: 23, weight: .bold)
@@ -50,7 +52,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var contentUserLabel: UILabel = {
+    private(set) lazy var contentUserLabel: UILabel = {
         let element = UILabel()
         element.text = "@ekaterina_nov"
         element.numberOfLines = 0
@@ -60,7 +62,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var descrUserLabel: UILabel = {
+    private(set) lazy var descrUserLabel: UILabel = {
         let element = UILabel()
         element.text = "Hello, world!"
         element.font = .systemFont(ofSize: 13, weight: .regular)
@@ -74,11 +76,23 @@ final class ProfileView: UIView {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
+        
+        updateProfileDetails()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Private Properties
+    private func updateProfileDetails() {
+        if let profile = ProfileService.shared.profile {
+            nameLabel.text = profile.name
+            contentUserLabel.text = profile.loginName
+            descrUserLabel.text = profile.bio ?? "Нет описания"
+        }
+    }
+    
 }
 
 // MARK: - Set Views and Setup Constraints

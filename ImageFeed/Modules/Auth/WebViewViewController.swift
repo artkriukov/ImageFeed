@@ -23,6 +23,7 @@ final class WebViewViewController: UIViewController {
     private let webView = WebView()
     
     weak var delegate: WebViewViewControllerDelegate?
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
     // MARK: - Life Circle
     override func viewDidLoad() {
@@ -33,13 +34,13 @@ final class WebViewViewController: UIViewController {
         
         loadAuthView()
         
-        webView.wkWebView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil
-        )
-        
+        estimatedProgressObservation = webView.wkWebView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
         updateProgress()
     }
     
@@ -52,23 +53,10 @@ final class WebViewViewController: UIViewController {
             delegate?.webViewViewControllerDidCancel(self)
         }
         
-        webView.wkWebView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
+        estimatedProgressObservation?.invalidate()
     }
     
     // MARK: - Methods
-    
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
     
     private func updateProgress() {
         webView.progressView.progress = Float(webView.wkWebView.estimatedProgress)

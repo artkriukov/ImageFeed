@@ -7,40 +7,57 @@
 
 import Foundation
 
-enum NetworkError: Error {
-    case httpStatusCode(Int)
-    case urlRequestError(Error)
-    case urlSessionError
-}
-
 final class OAuth2Service {
     
     static let shared = OAuth2Service()
     private init() {}
     
     private let decoder = JSONDecoder()
+    private let urlSession = URLSession.shared
     
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let urlRequest = makeOAuthTokenRequest(code: code) else { return }
-        
-        let task = URLSession.shared.data(for: urlRequest) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    let response = try self.decoder.decode(OAuthTokenResponseBody.self,from: data)
-                    OAuth2TokenStorage.shared.token = response.accessToken
-                    completion(.success(response.accessToken))
-                } catch {
-                    print("Ошибка декодирования: \(error.localizedDescription)")
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        DispatchQueue.main.async {
+            if let task = self.task {
+                if self.lastCode == code {
+                    let error = NetworkError.requestInProgress
+                    print("[OAuth2Service.fetchOAuthToken]: \(error) - код уже в обработке: \(code)")
                     completion(.failure(error))
+                    return
+                } else {
+                    task.cancel()
                 }
-            case .failure(let error):
-                print("Сетевая ошибка: \(error.localizedDescription)")
-                completion(.failure(error))
             }
+            guard let urlRequest = self.makeOAuthTokenRequest(code: code) else {
+                let error = NetworkError.invalidRequest
+                print("[OAuth2Service.fetchOAuthToken]: \(error) - неверный запрос для кода: \(code)")
+                completion(.failure(error))
+                return
+            }
+            
+            let task = self.urlSession.objectTask(for: urlRequest) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+                DispatchQueue.main.async {
+                    guard let self else { return }
+                    
+                    self.task = nil
+                    self.lastCode = nil
+                    
+                    switch result {
+                    case .success(let response):
+                        OAuth2TokenStorage.shared.token = response.accessToken
+                        completion(.success(response.accessToken))
+                    case .failure(let error):
+                        print("[OAuth2Service.fetchOAuthToken]: \(error) - код: \(code)")
+                        completion(.failure(error))
+                    }
+                }
+            }
+            
+            self.task = task
+            task.resume()
         }
-        
-        task.resume()
     }
     
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
@@ -58,12 +75,13 @@ final class OAuth2Service {
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
+        print(code)
         
         guard let url = urlComponents.url else {
             assertionFailure("Неверный URL: \(urlComponents)")
             return nil
         }
-        
+        print(url)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         print(request)
@@ -71,33 +89,3 @@ final class OAuth2Service {
     }
 }
 
-
-extension URLSession {
-    func data(
-        for request: URLRequest,
-        completion: @escaping (Result<Data, Error>) -> Void
-    ) -> URLSessionTask {
-        
-        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
-        let task = dataTask(with: request, completionHandler: { data, response, error in
-            if let data = data, let response = response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
-                    fulfillCompletionOnTheMainThread(.success(data))
-                } else {
-                    fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
-                }
-            } else if let error = error {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
-            } else {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
-            }
-        })
-        
-        return task
-    }
-}
