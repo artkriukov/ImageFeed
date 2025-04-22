@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
     
@@ -14,7 +15,7 @@ final class ImagesListCell: UITableViewCell {
     }
     
     // MARK: - UI Elements
-    private let mainImage: UIImageView = {
+    let mainImage: UIImageView = {
         let element = UIImageView()
         element.contentMode = .scaleAspectFill
         element.clipsToBounds = true
@@ -51,13 +52,17 @@ final class ImagesListCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        mainImage.kf.cancelDownloadTask()
+        mainImage.image = nil
+    }
 
     // MARK: - Configure Cell
-    func configure(with photoName: String, isLiked: Bool, date: String) {
-        mainImage.image = UIImage(named: photoName)
+    func configure(with photo: Photo, date: String) {
         dateLabel.text = date
-        let likeImage = isLiked ? UIConstants.Images.noActiveButton : UIConstants.Images.activeButton
-        self.selectionStyle = .none
+        let likeImage = photo.isLiked ? UIConstants.Images.activeButton : UIConstants.Images.noActiveButton
         favoriteButton.setImage(likeImage, for: .normal)
     }
 }

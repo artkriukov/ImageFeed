@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol ImagesTableViewDelegate: AnyObject {
     func didSelectImage(_ image: UIImage)
@@ -13,10 +14,13 @@ protocol ImagesTableViewDelegate: AnyObject {
 
 final class ImagesTableView: UIView {
     // MARK: - Private Properties
-    private var photosName = Array(0..<20).map { "\($0)" }
+    var photos: [Photo] = []
     weak var delegate: ImagesTableViewDelegate?
 
     // MARK: - UI
+    
+    private let placeholderImage = UIImage(named: "0")
+    
     private lazy var imagesTableView: UITableView = {
         let element = UITableView()
         element.separatorStyle = .none
@@ -34,10 +38,44 @@ final class ImagesTableView: UIView {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
+        setupNotificationObserver()
+        loadInitialPhotos()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func loadInitialPhotos() {
+        if photos.isEmpty {
+            ImagesListService.shared.fetchPhotosNextPage()
+        }
+    }
+    
+    private func setupNotificationObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateTableViewAnimated),
+            name: ImagesListService.didChangeNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = ImagesListService.shared.photos.count
+        photos = ImagesListService.shared.photos
+        
+        if oldCount != newCount {
+            imagesTableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+                imagesTableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
+        }
     }
     
     private static let dateFormatter: DateFormatter = {
@@ -51,7 +89,7 @@ final class ImagesTableView: UIView {
 // MARK: - UITableViewDataSource
 extension ImagesTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        photosName.count
+        photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -59,11 +97,25 @@ extension ImagesTableView: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let photoName = photosName[indexPath.row]
+        let photo = photos[indexPath.row]
         let isLiked = indexPath.row % 2 == 0
         let date = Self.dateFormatter.string(from: Date())
         
-        cell.configure(with: photoName, isLiked: isLiked, date: date)
+        cell.configure(with: photo, date: date)
+        
+        if let thumbImageURL = URL(string: photo.thumbImageURL) {
+            cell.mainImage.kf.indicatorType = .activity
+            cell.mainImage.kf.setImage(
+                with: thumbImageURL,
+                placeholder: placeholderImage,
+                options: [
+                    .transition(.fade(0.2))
+                ],
+                completionHandler: { [weak tableView] _ in
+                    tableView?.reloadRows(at: [indexPath], with: .none)
+                }
+            )
+        }
         
         return cell
     }
@@ -73,8 +125,8 @@ extension ImagesTableView: UITableViewDataSource {
         willDisplay cell: UITableViewCell,
         forRowAt indexPath: IndexPath
     ) {
-        if indexPath.row + 1 == photosName.count {
-#warning("вызываем функцию fetchPhotosNextPage()")
+        if indexPath.row + 1 == photos.count {
+            ImagesListService.shared.fetchPhotosNextPage()
         }
     }
 }
@@ -82,23 +134,23 @@ extension ImagesTableView: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ImagesTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
-            return 0
+            guard indexPath.row < photos.count else { return 0 }
+            
+            let photo = photos[indexPath.row]
+            let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
+            let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
+            let scale = imageViewWidth / photo.size.width
+            return photo.size.height * scale + imageInsets.top + imageInsets.bottom
         }
         
-        let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-        let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
-        let scale = imageViewWidth / image.size.width
-        return image.size.height * scale + imageInsets.top + imageInsets.bottom
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let imageName = photosName[indexPath.row]
-        
-        if let selectedImage = UIImage(named: imageName) ?? UIImage(named: "0") {
-            delegate?.didSelectImage(selectedImage)
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            guard indexPath.row < photos.count,
+                  let cell = tableView.cellForRow(at: indexPath) as? ImagesListCell,
+                  let image = cell.mainImage.image else {
+                return
+            }
+            delegate?.didSelectImage(image)
         }
-    }
     
 }
 
