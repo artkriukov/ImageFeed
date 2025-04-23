@@ -8,11 +8,22 @@
 import UIKit
 import Kingfisher
 
+protocol ImagesListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
+}
+
 final class ImagesListCell: UITableViewCell {
     
     static var reuseIdentifier: String {
         String(describing: self)
     }
+    
+    private var currentPhotoId: String?
+    
+    var onLikeButtonTapped: ((String) -> Void)?
+    var isLiked = false
+    
+    weak var delegate: ImagesListCellDelegate?
     
     // MARK: - UI Elements
     let mainImage: UIImageView = {
@@ -27,6 +38,12 @@ final class ImagesListCell: UITableViewCell {
     private let favoriteButton: UIButton = {
         let element = UIButton(type: .custom)
         element.setImage(UIConstants.Images.noActiveButton, for: .normal)
+        element
+            .addTarget(
+                nil,
+                action: #selector(likeButtonClicked),
+                for: .touchUpInside
+            )
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -61,9 +78,24 @@ final class ImagesListCell: UITableViewCell {
 
     // MARK: - Configure Cell
     func configure(with photo: Photo, date: String) {
+        currentPhotoId = photo.id
         dateLabel.text = date
         let likeImage = photo.isLiked ? UIConstants.Images.activeButton : UIConstants.Images.noActiveButton
         favoriteButton.setImage(likeImage, for: .normal)
+    }
+    
+    public func setIsLiked(isLiked: Bool) {
+        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+        favoriteButton.imageView?.image = likeImage
+        favoriteButton.setImage(likeImage, for: .normal)
+    }
+    
+    @objc private func likeButtonClicked() {
+        guard let photoId = currentPhotoId else { return }
+        
+        delegate?.imageListCellDidTapLike(self)
+        onLikeButtonTapped?(photoId)
+        print(1)
     }
 }
 

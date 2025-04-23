@@ -13,6 +13,8 @@ protocol ImagesTableViewDelegate: AnyObject {
 }
 
 final class ImagesTableView: UIView {
+
+
     // MARK: - Private Properties
     var photos: [Photo] = []
     weak var delegate: ImagesTableViewDelegate?
@@ -84,6 +86,25 @@ final class ImagesTableView: UIView {
         formatter.timeStyle = .none
         return formatter
     }()
+    
+    private func handleLikeAction(for photoId: String) {
+        guard let index = photos.firstIndex(where: { $0.id == photoId }) else { return }
+        let currentLikeStatus = photos[index].isLiked
+        
+        ImagesListService.shared.changeLike(photoId: photoId, isLike: !currentLikeStatus) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.imagesTableView.reloadRows(
+                        at: [IndexPath(row: index, section: 0)],
+                        with: .automatic
+                    )
+                case .failure(let error):
+                    print("Error changing like: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -98,8 +119,12 @@ extension ImagesTableView: UITableViewDataSource {
         }
         
         let photo = photos[indexPath.row]
-        let isLiked = indexPath.row % 2 == 0
         let date = Self.dateFormatter.string(from: Date())
+        
+        cell.onLikeButtonTapped = { [weak self] photoId in
+            self?.handleLikeAction(for: photoId)
+        }
+        cell.delegate = self 
         
         cell.configure(with: photo, date: date)
         
@@ -153,6 +178,26 @@ extension ImagesTableView: UITableViewDelegate {
         }
     
 }
+
+extension ImagesTableView: ImagesListCellDelegate {
+    
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = imagesTableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        UIBlockingProgressHUD.show()
+        ImagesListService.shared.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+            switch result {
+            case .success:
+                self.photos = ImagesListService.shared.photos
+                cell.setIsLiked(isLiked: !self.photos[indexPath.row].isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+            }
+        }
+    }
+}
+
 
 // MARK: - Set Views and Setup Constraints
 private extension ImagesTableView {

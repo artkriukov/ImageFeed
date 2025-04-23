@@ -93,6 +93,53 @@ final class ImagesListService {
     
     
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        // Реализация лайков
+        
+        guard let token = OAuth2TokenStorage.shared.token else {
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        
+        let urlString = "https://api.unsplash.com/photos/\(photoId)/like"
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? "POST" : "DELETE"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let task = urlSession.data(for: request) { [weak self] (result: Result<Data, Error>) in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let data):
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let likeResult = try decoder.decode(LikeResult.self, from: data)
+                    
+                    DispatchQueue.main.async {
+                        if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                            var updatedPhoto = self.photos[index]
+                            updatedPhoto.isLiked = likeResult.photo.likedByUser
+                            self.photos[index] = updatedPhoto
+                            NotificationCenter.default.post(
+                                name: ImagesListService.didChangeNotification,
+                                object: self
+                            )
+                        }
+                        completion(.success(()))
+                    }
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
     }
 }
+
