@@ -36,9 +36,8 @@ final class SingleImageViewController: UIViewController {
     }()
     
     private lazy var shareButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.setImage(UIConstants.Images.sharingImage, for: .normal)
-        button.tintColor = .white
         button.addTarget(self, action: #selector(didTapShareButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -67,25 +66,25 @@ final class SingleImageViewController: UIViewController {
         NSLayoutConstraint.activate([
             // Scroll View
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-                    scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                    scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                    scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             // Image View
             imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-                    imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-                    imageView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-                    imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            imageView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             // Back Button
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11),
-                    backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
-                    backButton.widthAnchor.constraint(equalToConstant: 24),
-                    backButton.heightAnchor.constraint(equalToConstant: 24),
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 9),
+            backButton.widthAnchor.constraint(equalToConstant: 24),
+            backButton.heightAnchor.constraint(equalToConstant: 24),
             
             // Share Button
             shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                   shareButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -17)
+            shareButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -17)
         ])
     }
     
@@ -120,32 +119,32 @@ final class SingleImageViewController: UIViewController {
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
-            let maxZoomScale = scrollView.maximumZoomScale
-            
-            view.layoutIfNeeded()
-            let visibleRectSize = scrollView.bounds.size
-            let imageSize = image.size
-            
-            // Рассчитываем оптимальный масштаб
-            let widthScale = visibleRectSize.width / imageSize.width
-            let heightScale = visibleRectSize.height / imageSize.height
-            let initialScale = max(widthScale, heightScale)
-            
-            scrollView.minimumZoomScale = min(initialScale, 1.0)
-            scrollView.zoomScale = initialScale
-            
-            // Центрируем изображение
-            let scaledImageWidth = imageSize.width * initialScale
-            let scaledImageHeight = imageSize.height * initialScale
-            let verticalInset = max((visibleRectSize.height - scaledImageHeight) / 2, 0)
-            let horizontalInset = max((visibleRectSize.width - scaledImageWidth) / 2, 0)
-            
-            scrollView.contentInset = UIEdgeInsets(
-                top: verticalInset,
-                left: horizontalInset,
-                bottom: verticalInset,
-                right: horizontalInset
-            )
+        let maxZoomScale = scrollView.maximumZoomScale
+        
+        view.layoutIfNeeded()
+        let visibleRectSize = scrollView.bounds.size
+        let imageSize = image.size
+        
+        // Рассчитываем оптимальный масштаб
+        let widthScale = visibleRectSize.width / imageSize.width
+        let heightScale = visibleRectSize.height / imageSize.height
+        let initialScale = max(widthScale, heightScale)
+        
+        scrollView.minimumZoomScale = min(initialScale, 1.0)
+        scrollView.zoomScale = initialScale
+        
+        // Центрируем изображение
+        let scaledImageWidth = imageSize.width * initialScale
+        let scaledImageHeight = imageSize.height * initialScale
+        let verticalInset = max((visibleRectSize.height - scaledImageHeight) / 2, 0)
+        let horizontalInset = max((visibleRectSize.width - scaledImageWidth) / 2, 0)
+        
+        scrollView.contentInset = UIEdgeInsets(
+            top: verticalInset,
+            left: horizontalInset,
+            bottom: verticalInset,
+            right: horizontalInset
+        )
     }
     
     private func showError() {
