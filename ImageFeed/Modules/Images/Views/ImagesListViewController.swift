@@ -23,9 +23,10 @@ final class ImagesListViewController: UIViewController {
 }
 
 extension ImagesListViewController: ImagesTableViewDelegate {
-    func didSelectImage(_ image: UIImage) {
+    
+    func didSelectImage(_ photo: Photo) {
         let singleImageVC = SingleImageViewController()
-        singleImageVC.singleImageView.singleImage.image = image
+        singleImageVC.photo = photo 
         singleImageVC.modalPresentationStyle = .fullScreen
         present(singleImageVC, animated: true)
     }

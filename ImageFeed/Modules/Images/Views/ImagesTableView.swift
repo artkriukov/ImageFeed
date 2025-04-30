@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 protocol ImagesTableViewDelegate: AnyObject {
-    func didSelectImage(_ image: UIImage)
+    func didSelectImage(_ photo: Photo)
 }
 
 final class ImagesTableView: UIView {
@@ -168,15 +168,12 @@ extension ImagesTableView: UITableViewDelegate {
             return photo.size.height * scale + imageInsets.top + imageInsets.bottom
         }
         
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            guard indexPath.row < photos.count,
-                  let cell = tableView.cellForRow(at: indexPath) as? ImagesListCell,
-                  let image = cell.mainImage.image else {
-                return
-            }
-            tableView.deselectRow(at: indexPath, animated: true)
-            delegate?.didSelectImage(image)
-        }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.row < photos.count else { return }
+        let photo = photos[indexPath.row]
+        delegate?.didSelectImage(photo)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
     
 }
 
