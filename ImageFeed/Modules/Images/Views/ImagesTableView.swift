@@ -21,7 +21,7 @@ final class ImagesTableView: UIView {
 
     // MARK: - UI
     
-    private let placeholderImage = UIImage(named: "0")
+    private let placeholderImage = UIImage(named: "image_placeholder")
     
     private lazy var imagesTableView: UITableView = {
         let element = UITableView()
@@ -174,6 +174,7 @@ extension ImagesTableView: UITableViewDelegate {
                   let image = cell.mainImage.image else {
                 return
             }
+            tableView.deselectRow(at: indexPath, animated: true)
             delegate?.didSelectImage(image)
         }
     
