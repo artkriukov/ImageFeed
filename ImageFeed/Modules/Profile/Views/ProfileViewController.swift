@@ -21,6 +21,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         self.view = profileView
+        setupLogoutButton()
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -32,6 +33,18 @@ final class ProfileViewController: UIViewController {
                 self.updateAvatar()
             }
         updateAvatar()
+    }
+    
+    private func setupLogoutButton() {
+        profileView.logoutButton.addTarget(
+            self,
+            action: #selector(didTapLogoutButton),
+            for: .touchUpInside
+        )
+    }
+    
+    @objc private func didTapLogoutButton() {
+        ProfileLogoutService.shared.logout()
     }
     
     private func updateAvatar() {

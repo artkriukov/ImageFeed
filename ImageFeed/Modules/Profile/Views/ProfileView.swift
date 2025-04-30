@@ -28,7 +28,7 @@ final class ProfileView: UIView {
         return element
     }()
     
-    private lazy var logoutButton: UIButton = {
+    private(set) lazy var logoutButton: UIButton = {
         let element = UIButton(type: .custom)
         element.setImage(UIConstants.Images.logoutButton, for: .normal)
         element.translatesAutoresizingMaskIntoConstraints = false
