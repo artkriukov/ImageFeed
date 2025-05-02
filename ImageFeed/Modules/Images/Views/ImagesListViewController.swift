@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ImagesListViewController: UIViewController {
     
@@ -19,6 +20,8 @@ final class ImagesListViewController: UIViewController {
         
         tableView.delegate = self
         view.backgroundColor = UIConstants.Colors.blackColor
+        KingfisherManager.shared.cache.clearMemoryCache()
+        KingfisherManager.shared.cache.clearDiskCache()
     }
 }
 

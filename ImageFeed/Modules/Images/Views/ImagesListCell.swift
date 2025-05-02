@@ -19,6 +19,7 @@ final class ImagesListCell: UITableViewCell {
     }
     
     private var currentPhotoId: String?
+    private var animationLayers = Set<CALayer>()
     
     var onLikeButtonTapped: ((String) -> Void)?
     var isLiked = false
@@ -55,7 +56,7 @@ final class ImagesListCell: UITableViewCell {
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
-
+    
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -74,14 +75,51 @@ final class ImagesListCell: UITableViewCell {
         super.prepareForReuse()
         mainImage.kf.cancelDownloadTask()
         mainImage.image = nil
+        removeGradientAnimation()
     }
-
+    
     // MARK: - Configure Cell
     func configure(with photo: Photo, date: String) {
         currentPhotoId = photo.id
         dateLabel.text = date
         let likeImage = photo.isLiked ? UIConstants.Images.activeButton : UIConstants.Images.noActiveButton
         favoriteButton.setImage(likeImage, for: .normal)
+    }
+    
+    func showLoadingAnimation() {
+        removeGradientAnimation()
+        addGradientAnimation()
+    }
+    
+    private func addGradientAnimation() {
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(x: 0, y: 0, width: mainImage.bounds.width, height: mainImage.bounds.height)
+        
+        gradient.locations = [0, 0.1, 0.3]
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+            UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+        ]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.cornerRadius = 16
+        gradient.masksToBounds = true
+        
+        let animation = CABasicAnimation(keyPath: "locations")
+        animation.duration = 1.0
+        animation.repeatCount = .infinity
+        animation.fromValue = [0, 0.1, 0.3]
+        animation.toValue = [0, 0.8, 1]
+        
+        gradient.add(animation, forKey: "locationsChange")
+        mainImage.layer.addSublayer(gradient)
+        animationLayers.insert(gradient)
+    }
+    
+    func removeGradientAnimation() {
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
     }
     
     public func setIsLiked(isLiked: Bool) {

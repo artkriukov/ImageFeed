@@ -120,6 +120,8 @@ extension ImagesTableView: UITableViewDataSource {
         
         let photo = photos[indexPath.row]
         let date = Self.dateFormatter.string(from: Date())
+        cell.showLoadingAnimation()
+        
         
         cell.onLikeButtonTapped = { [weak self] photoId in
             self?.handleLikeAction(for: photoId)
@@ -137,6 +139,7 @@ extension ImagesTableView: UITableViewDataSource {
                     .transition(.fade(0.2))
                 ],
                 completionHandler: { [weak tableView] _ in
+                    cell.removeGradientAnimation()
                     tableView?.reloadRows(at: [indexPath], with: .none)
                 }
             )

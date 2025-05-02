@@ -33,6 +33,7 @@ final class ProfileViewController: UIViewController {
                 self.updateAvatar()
             }
         updateAvatar()
+        profileView.addGradientAnimation()
     }
     
     private func setupLogoutButton() {
@@ -48,22 +49,26 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar() {
+        profileView.addGradientAnimation()
+        
         guard let profileImageURL = ProfileImageService.shared.avatarURL,
               let url = URL(string: profileImageURL) else {
-            profileView.userImage.image = UIImage(named: "UserPhoto")
+            
             return
         }
         
-        
-        profileView.userImage.layer.cornerRadius = 35
-        
-        profileView.userImage.kf.setImage(
+        self.profileView.userImage.kf.setImage(
             with: url,
-            placeholder: UIImage(named: "UserPhoto"),
+            placeholder: nil,
             options: [
                 .transition(.fade(0.3)),
                 .cacheOriginalImage
-            ]
+            ],
+            completionHandler: { [weak self] _ in
+                self?.profileView.removeGradientAnimation()
+            }
         )
     }
+    
+    
 }

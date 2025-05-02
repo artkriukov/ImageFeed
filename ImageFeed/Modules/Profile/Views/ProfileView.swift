@@ -8,6 +8,7 @@
 import UIKit
 
 final class ProfileView: UIView {
+    private var animationLayers = Set<CALayer>()
     
     // MARK: - UI
     private lazy var userStackView: UIStackView = {
@@ -20,7 +21,6 @@ final class ProfileView: UIView {
     
     private(set) lazy var userImage: UIImageView = {
         let element = UIImageView()
-        element.image = UIImage(named: "UserPhoto")
         element.contentMode = .scaleAspectFill
         element.clipsToBounds = true
         element.layer.cornerRadius = 35
@@ -92,6 +92,49 @@ final class ProfileView: UIView {
             descrUserLabel.text = profile.bio ?? "Нет описания"
         }
     }
+    
+    func addGradientAnimation() {
+        layoutIfNeeded()
+        
+        addGradientAnimation(to: userImage, cornerRadius: 35)
+        addGradientAnimation(to: nameLabel)
+        addGradientAnimation(to: contentUserLabel)
+        addGradientAnimation(to: descrUserLabel)
+    }
+    
+    private func addGradientAnimation(to view: UIView, cornerRadius: CGFloat = 0) {
+            let gradient = CAGradientLayer()
+            gradient.frame = view.bounds
+            gradient.locations = [0, 0.1, 0.3]
+            gradient.colors = [
+                UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 0.7).cgColor,
+                UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 0.7).cgColor,
+                UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 0.7).cgColor
+            ]
+            gradient.startPoint = CGPoint(x: 0, y: 0.5)
+            gradient.endPoint = CGPoint(x: 1, y: 0.5)
+            gradient.cornerRadius = cornerRadius
+            gradient.masksToBounds = true
+            gradient.name = "loadingGradient"
+            
+            let animation = CABasicAnimation(keyPath: "locations")
+            animation.duration = 1.5
+            animation.repeatCount = .infinity
+            animation.fromValue = [0, 0.1, 0.3]
+            animation.toValue = [0, 0.8, 1]
+            
+            gradient.add(animation, forKey: "loadingAnimation")
+            view.layer.addSublayer(gradient)
+            animationLayers.insert(gradient)
+        }
+        
+        func removeGradientAnimation() {
+            animationLayers.forEach { layer in
+                layer.removeAllAnimations()
+                layer.removeFromSuperlayer()
+            }
+            animationLayers.removeAll()
+        }
     
 }
 
