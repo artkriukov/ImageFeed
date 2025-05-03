@@ -44,7 +44,7 @@ final class SingleImageViewController: UIViewController {
     }()
     
     // MARK: - Properties
-    var photo: Photo!
+    var photo: Photo?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -97,7 +97,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func loadImage() {
-        guard let url = URL(string: photo.largeImageURL) else {
+        guard let photo = photo, let url = URL(string: photo.largeImageURL) else {
             showError()
             return
         }
@@ -118,8 +118,6 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
-        let minZoomScale = scrollView.minimumZoomScale
-        let maxZoomScale = scrollView.maximumZoomScale
         
         view.layoutIfNeeded()
         let visibleRectSize = scrollView.bounds.size

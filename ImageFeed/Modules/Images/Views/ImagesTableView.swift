@@ -13,12 +13,12 @@ protocol ImagesTableViewDelegate: AnyObject {
 }
 
 final class ImagesTableView: UIView {
-
-
+    
+    
     // MARK: - Private Properties
     var photos: [Photo] = []
     weak var delegate: ImagesTableViewDelegate?
-
+    
     // MARK: - UI
     
     private let placeholderImage = UIImage(named: "image_placeholder")
@@ -126,7 +126,7 @@ extension ImagesTableView: UITableViewDataSource {
         cell.onLikeButtonTapped = { [weak self] photoId in
             self?.handleLikeAction(for: photoId)
         }
-        cell.delegate = self 
+        cell.delegate = self
         
         cell.configure(with: photo, date: date)
         
@@ -162,15 +162,15 @@ extension ImagesTableView: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ImagesTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            guard indexPath.row < photos.count else { return 0 }
-            
-            let photo = photos[indexPath.row]
-            let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-            let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
-            let scale = imageViewWidth / photo.size.width
-            return photo.size.height * scale + imageInsets.top + imageInsets.bottom
-        }
+        guard indexPath.row < photos.count else { return 0 }
         
+        let photo = photos[indexPath.row]
+        let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
+        let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
+        let scale = imageViewWidth / photo.size.width
+        return photo.size.height * scale + imageInsets.top + imageInsets.bottom
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row < photos.count else { return }
         let photo = photos[indexPath.row]
@@ -186,7 +186,9 @@ extension ImagesTableView: ImagesListCellDelegate {
         guard let indexPath = imagesTableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
-        ImagesListService.shared.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
+        ImagesListService.shared.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self else { return }
+            
             switch result {
             case .success:
                 self.photos = ImagesListService.shared.photos

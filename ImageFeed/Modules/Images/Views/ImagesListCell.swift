@@ -122,8 +122,10 @@ final class ImagesListCell: UITableViewCell {
         animationLayers.removeAll()
     }
     
-    public func setIsLiked(isLiked: Bool) {
-        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+    func setIsLiked(isLiked: Bool) {
+        let likeImage = isLiked ? UIImage(resource: .activeBtn) : UIImage(
+            resource: .noActiveBtn
+        )
         favoriteButton.imageView?.image = likeImage
         favoriteButton.setImage(likeImage, for: .normal)
     }
