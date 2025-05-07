@@ -8,32 +8,24 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
-    
-    private var profileImageServiceObserver: NSObjectProtocol?
-    
-    // MARK: - Private Properties
+protocol ProfileViewControllerProtocol: AnyObject {
+    func setProfileDetails(name: String, loginName: String, bio: String?)
+    func setAvatar(url: URL)
+    func showLoadingAnimation()
+    func hideLoadingAnimation()
+    func showLogoutConfirmationAlert()
+    func logout()
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     private let profileView = ProfileView()
+    var presenter: ProfilePresenterProtocol?
     
-    
-    // MARK: - Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view = profileView
         setupLogoutButton()
-        
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
-        updateAvatar()
-        profileView.addGradientAnimation()
+        presenter?.viewDidLoad()
     }
     
     private func setupLogoutButton() {
@@ -45,50 +37,42 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func didTapLogoutButton() {
+        presenter?.didTapLogout()
+    }
+    
+    // MARK: - ProfileViewControllerProtocol
+    func setProfileDetails(name: String, loginName: String, bio: String?) {
+        profileView.nameLabel.text = name
+        profileView.contentUserLabel.text = loginName
+        profileView.descrUserLabel.text = bio ?? "Нет описания"
+    }
+    
+    func setAvatar(url: URL) {
+        profileView.userImage.kf.setImage(with: url)
+    }
+    
+    func showLoadingAnimation() {
+        profileView.addGradientAnimation()
+    }
+    
+    func hideLoadingAnimation() {
+        profileView.removeGradientAnimation()
+    }
+    
+    func showLogoutConfirmationAlert() {
         let alert = UIAlertController(
             title: "Пока, пока!",
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert
         )
-        
-        alert.addAction(
-            UIAlertAction(title: "Нет", style: .cancel)
-        )
-        
-        alert.addAction(
-            UIAlertAction(title: "Да", style: .destructive) { [weak self] _ in
-                self?.performLogout()
-            }
-        )
-        
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Да", style: .destructive) { [weak self] _ in
+            self?.logout()
+        })
         present(alert, animated: true)
     }
     
-    private func performLogout() {
+    func logout() {
         ProfileLogoutService.shared.logout()
     }
-    
-    private func updateAvatar() {
-        profileView.addGradientAnimation()
-        
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-              let url = URL(string: profileImageURL) else {
-            
-            return
-        }
-        
-        self.profileView.userImage.kf.setImage(
-            with: url,
-            placeholder: nil,
-            options: [
-                .transition(.fade(0.3)),
-                .cacheOriginalImage
-            ],
-            completionHandler: { [weak self] _ in
-                self?.profileView.removeGradientAnimation()
-            }
-        )
-    }
-    
-    
 }

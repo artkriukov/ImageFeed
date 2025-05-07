@@ -7,7 +7,13 @@
 
 import Foundation
 
-final class ProfileService {
+protocol ProfileServiceProtocol: AnyObject {
+    var profile: Profile? { get }
+    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void)
+    func cleanProfile()
+}
+
+final class ProfileService: ProfileServiceProtocol {
     
     static let shared = ProfileService()
     private init() {}
