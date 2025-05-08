@@ -50,6 +50,10 @@ final class SplashScreenViewController: UIViewController {
         imagesListVC.tabBarItem = UITabBarItem(title: nil, image: UIConstants.TapBarImages.editorialActive, tag: 0)
         
         let profileVC = ProfileViewController()
+        let presenter = ProfilePresenter()
+        profileVC.presenter = presenter
+        presenter.view = profileVC
+        
         profileVC.tabBarItem = UITabBarItem(title: nil, image: UIConstants.TapBarImages.profileActive, tag: 1)
         
         tabBarController.viewControllers = [imagesListVC, profileVC]

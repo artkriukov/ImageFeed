@@ -14,6 +14,7 @@ protocol ProfilePresenterProtocol: AnyObject {
     func didTapLogout()
     func updateProfileDetails()
     func updateAvatar()
+    func didTapConfirmLogout()
 }
 
 final class ProfilePresenter: ProfilePresenterProtocol {
@@ -54,13 +55,25 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     func updateAvatar() {
         view?.showLoadingAnimation()
         
-        guard let url = profileImageService.avatarURL.flatMap({ URL(string: $0) }) else {
+        guard let username = profileService.profile?.username else {
             view?.hideLoadingAnimation()
             return
         }
         
-        view?.setAvatar(url: url)
-        view?.hideLoadingAnimation()
+        profileImageService.fetchProfileImageURL(username: username) { [weak self] result in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                self.view?.hideLoadingAnimation()
+                switch result {
+                case .success(let urlString):
+                    if let url = URL(string: urlString) {
+                        self.view?.setAvatar(url: url)
+                    }
+                case .failure(let error):
+                    print("Ошибка загрузки аватарки: \(error)")
+                }
+            }
+        }
     }
     
     private func setupObserver() {
@@ -71,5 +84,9 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         ) { [weak self] _ in
             self?.updateAvatar()
         }
+    }
+    
+    func didTapConfirmLogout() {
+        logoutService.logout()
     }
 }

@@ -73,6 +73,6 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     }
     
     func logout() {
-        ProfileLogoutService.shared.logout()
+        presenter?.didTapConfirmLogout()
     }
 }
