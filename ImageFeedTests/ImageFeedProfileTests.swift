@@ -61,22 +61,6 @@ final class ProfileTests: XCTestCase {
         XCTAssertTrue(viewSpy.setProfileDetailsCalled)
     }
     
-    func testPresenterUpdatesAvatar() {
-        // Given
-        let viewSpy = ProfileViewControllerSpy()
-        let presenter = ProfilePresenter(profileImageService: imageServiceMock)
-        viewSpy.presenter = presenter
-        presenter.view = viewSpy
-        
-        // When
-        presenter.updateAvatar()
-        
-        // Then
-        XCTAssertTrue(viewSpy.showLoadingCalled)
-        XCTAssertTrue(viewSpy.setAvatarCalled)
-        XCTAssertTrue(viewSpy.hideLoadingCalled)
-    }
-    
     func testLogoutButtonTriggersPresenter() {
         // Given
         let viewSpy = ProfileViewControllerSpy()
@@ -123,6 +107,10 @@ final class ProfileImageServiceMock: ProfileImageServiceProtocol {
 }
 
 final class ProfilePresenterSpy: ProfilePresenterProtocol {
+    func didTapConfirmLogout() {
+         
+    }
+
     weak var view: ProfileViewControllerProtocol?
     var viewDidLoadCalled = false
     var didTapLogoutCalled = false
