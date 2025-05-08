@@ -8,8 +8,8 @@
 import Foundation
 
 enum Constants {
-    static let accessKey = "vTNkfKtDmoBndlU2TJ8gz_06HfMKyZA1fS84IJLEnjI"
-    static let secretKey = "f_vvH0rjVC6eyydk5w7RuPLH2Am-pxHfhgxNpEmBYvA"
+    static let accessKey = "FXwsOKxWP-l3I45ZqxTyxmrVh0DpCvBEbjYTMs2kaNE"
+    static let secretKey = "K22NIO-C66nSY1mZmmCnEC_xSsOV8eABfRyOd9BNMpk"
     static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"
     static let accessScope = "public+read_user+write_likes"
     static let defaultBaseURL = URL(string: "https://api.unsplash.com")!
