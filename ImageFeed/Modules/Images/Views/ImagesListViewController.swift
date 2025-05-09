@@ -12,7 +12,7 @@ import Kingfisher
 final class ImagesListViewController: UIViewController {
     
     // MARK: - Private Properties
-    
+    private let service: ImagesListServiceProtocol
     private var photos: [Photo] = []
     private let placeholderImage = UIImage(named: "image_placeholder")
     
@@ -43,6 +43,15 @@ final class ImagesListViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    init(service: ImagesListServiceProtocol = ImagesListService.shared) {
+        self.service = service
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - Setup
@@ -134,6 +143,7 @@ extension ImagesListViewController: UITableViewDataSource {
         cell.delegate = self
         
         cell.configure(with: photo, date: date)
+        cell.selectionStyle = .none
         
         if let thumbImageURL = URL(string: photo.thumbImageURL) {
             cell.mainImage.kf.indicatorType = .activity
