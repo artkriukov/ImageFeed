@@ -45,6 +45,7 @@ final class ImagesListCell: UITableViewCell {
                 action: #selector(likeButtonClicked),
                 for: .touchUpInside
             )
+        element.accessibilityIdentifier = "like_button"
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -84,6 +85,16 @@ final class ImagesListCell: UITableViewCell {
         dateLabel.text = date
         let likeImage = photo.isLiked ? UIConstants.Images.activeButton : UIConstants.Images.noActiveButton
         favoriteButton.setImage(likeImage, for: .normal)
+        configureLikeButton(isLiked: photo.isLiked)
+    }
+    
+    func configureLikeButton(isLiked: Bool) {
+        let image = isLiked
+            ? UIConstants.Images.activeButton
+            : UIConstants.Images.noActiveButton
+        favoriteButton.setImage(image, for: .normal)
+        
+        favoriteButton.accessibilityIdentifier = "like_button_\(isLiked ? "on" : "off")"
     }
     
     func showLoadingAnimation() {

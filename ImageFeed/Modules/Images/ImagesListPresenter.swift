@@ -64,6 +64,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
             case .success:
                 self.photos = self.service.photos
                 self.view?.updateTableViewAnimated()
+                
             case .failure(let error):
                 print("Error changing like: \(error)")
             }

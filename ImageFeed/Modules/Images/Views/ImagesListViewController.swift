@@ -93,6 +93,11 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        guard let photo = presenter.photo(at: indexPath.row) else {
+            return cell
+        }
+        
+        cell.configureLikeButton(isLiked: photo.isLiked)
         configureCell(cell, at: indexPath)
         return cell
     }
@@ -104,6 +109,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         cell.delegate = self
+        cell.selectionStyle = .none
         cell.configure(
             with: photo,
             date: presenter.convertDate(photo: photo)
