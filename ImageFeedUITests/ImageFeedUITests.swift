@@ -21,17 +21,17 @@ final class ImageFeedUITests: XCTestCase {
         
         let loginTextField = webView.textFields.firstMatch
         loginTextField.tap()
-        loginTextField.typeText("art.kriukov@gmail.com")
+        loginTextField.typeText("")
         
         app.toolbars.buttons["Done"].tap()
         
         let passwordTextField = webView.secureTextFields.firstMatch
         passwordTextField.tap()
         
-        let password = "Telefon11/"
+        let password = ""
         for char in password {
             passwordTextField.typeText(String(char))
-            usleep(500_000) // 500ms задержка
+            usleep(500_000)
         }
         
         webView.buttons["Login"].tap()
@@ -44,31 +44,39 @@ final class ImageFeedUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
+        // 1. Ожидание загрузки ленты
         let tablesQuery = app.tables
+        let firstCell = tablesQuery.cells.element(boundBy: 0)
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 15), "Лента не загрузилась")
         
-        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        cell.swipeUp()
+        // 2. Скролл
+        firstCell.swipeUp()
         
-        sleep(2)
+        // 3. Лайк/дизлайк
+        let cellToLike = tablesQuery.cells.element(boundBy: 1)
+        XCTAssertTrue(cellToLike.waitForExistence(timeout: 10), "Ячейка для лайка не найдена")
         
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        let likeButton = cellToLike.buttons["like_button_off"]
+        XCTAssertTrue(likeButton.waitForExistence(timeout: 5), "Кнопка лайка не найдена")
+        likeButton.tap()
         
-        cellToLike.buttons["like button off"].tap()
-        cellToLike.buttons["like button on"].tap()
+        let likedButton = cellToLike.buttons["like_button_on"]
+        XCTAssertTrue(likedButton.waitForExistence(timeout: 5), "Лайк не установился")
+        likedButton.tap()
         
-        sleep(2)
-        
+        // 4. Переход к детальному просмотру
         cellToLike.tap()
         
-        sleep(2)
+        // 5. Проверка детального экрана
+        let image = app.scrollViews.images["fullscreen_image_view"]
+        XCTAssertTrue(image.waitForExistence(timeout: 15), "Изображение не открылось")
         
-        let image = app.scrollViews.images.element(boundBy: 0)
-        // Zoom in
-        image.pinch(withScale: 3, velocity: 1) // zoom in
-        // Zoom out
-        image.pinch(withScale: 0.5, velocity: -1)
+        // 6. Возврат
+        let backButton = app.buttons["nav_back_button_white"]
+        XCTAssertTrue(backButton.waitForExistence(timeout: 10), "Кнопка возврата не найдена")
+        backButton.tap()
         
-        let navBackButtonWhiteButton = app.buttons["nav back button white"]
-        navBackButtonWhiteButton.tap()
-    } 
+        // 7. Проверка возврата
+        XCTAssertTrue(tablesQuery.element.waitForExistence(timeout: 10), "Не вернулись на ленту")
+    }
 }

@@ -98,6 +98,7 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         cell.configureLikeButton(isLiked: photo.isLiked)
+        cell.accessibilityIdentifier = "feed_cell_\(indexPath.row)"
         configureCell(cell, at: indexPath)
         return cell
     }

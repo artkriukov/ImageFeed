@@ -22,6 +22,7 @@ final class SingleImageViewController: UIViewController {
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.accessibilityIdentifier = "fullscreen_image_view"
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -62,6 +63,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.addSubview(imageView)
         view.addSubview(backButton)
         view.addSubview(shareButton)
+        
+        backButton.accessibilityIdentifier = "nav_back_button_white"
         
         NSLayoutConstraint.activate([
             // Scroll View
