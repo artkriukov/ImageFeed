@@ -48,6 +48,7 @@ final class SplashScreenViewController: UIViewController {
         
         let imagesListVC = ImagesListViewController()
         imagesListVC.tabBarItem = UITabBarItem(title: nil, image: UIConstants.TapBarImages.editorialActive, tag: 0)
+        imagesListVC.tabBarItem.accessibilityIdentifier = "feed_tab_button"
         
         let profileVC = ProfileViewController()
         let presenter = ProfilePresenter()
@@ -55,6 +56,7 @@ final class SplashScreenViewController: UIViewController {
         presenter.view = profileVC
         
         profileVC.tabBarItem = UITabBarItem(title: nil, image: UIConstants.TapBarImages.profileActive, tag: 1)
+        profileVC.tabBarItem.accessibilityIdentifier = "profile_tab_button"
         
         tabBarController.viewControllers = [imagesListVC, profileVC]
         

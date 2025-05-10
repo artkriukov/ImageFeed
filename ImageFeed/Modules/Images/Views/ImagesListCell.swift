@@ -46,6 +46,7 @@ final class ImagesListCell: UITableViewCell {
                 for: .touchUpInside
             )
         element.accessibilityIdentifier = "like_button"
+        element.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()

@@ -65,10 +65,19 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert
         )
+        
+        alert.view.accessibilityIdentifier = "logout_alert"
+        
         alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Да", style: .destructive) { [weak self] _ in
-            self?.logout()
-        })
+        let yesAction = UIAlertAction(
+                title: "Да",
+                style: .destructive
+            ) { [weak self] _ in
+                self?.logout()
+            }
+        
+            yesAction.accessibilityIdentifier = "logout_confirm_button" 
+            alert.addAction(yesAction)
         present(alert, animated: true)
     }
     

@@ -31,6 +31,7 @@ final class SingleImageViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setImage(UIConstants.Images.backward, for: .normal)
         button.tintColor = .white
+        button.accessibilityIdentifier = "nav_back_button_white"
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -64,7 +65,7 @@ final class SingleImageViewController: UIViewController {
         view.addSubview(backButton)
         view.addSubview(shareButton)
         
-        backButton.accessibilityIdentifier = "nav_back_button_white"
+        
         
         NSLayoutConstraint.activate([
             // Scroll View
