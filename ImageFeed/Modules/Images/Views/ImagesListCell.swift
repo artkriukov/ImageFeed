@@ -45,7 +45,8 @@ final class ImagesListCell: UITableViewCell {
                 action: #selector(likeButtonClicked),
                 for: .touchUpInside
             )
-        element.accessibilityIdentifier = "like_button"
+        element.clipsToBounds = false
+        element.isUserInteractionEnabled = true
         element.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
@@ -78,6 +79,7 @@ final class ImagesListCell: UITableViewCell {
         mainImage.kf.cancelDownloadTask()
         mainImage.image = nil
         removeGradientAnimation()
+        favoriteButton.accessibilityIdentifier = nil
     }
     
     // MARK: - Configure Cell
@@ -96,6 +98,12 @@ final class ImagesListCell: UITableViewCell {
         favoriteButton.setImage(image, for: .normal)
         
         favoriteButton.accessibilityIdentifier = "like_button_\(isLiked ? "on" : "off")"
+        favoriteButton.isAccessibilityElement = true
+        favoriteButton.accessibilityLabel = isLiked ? "Unlike" : "Like"
+        
+        favoriteButton.imageView?.contentMode = .scaleAspectFit
+        favoriteButton.contentVerticalAlignment = .fill
+        favoriteButton.contentHorizontalAlignment = .fill
     }
     
     func showLoadingAnimation() {
@@ -140,6 +148,7 @@ final class ImagesListCell: UITableViewCell {
         )
         favoriteButton.imageView?.image = likeImage
         favoriteButton.setImage(likeImage, for: .normal)
+        favoriteButton.accessibilityIdentifier = "like_button_\(isLiked ? "on" : "off")"
     }
     
     @objc private func likeButtonClicked() {
@@ -157,6 +166,9 @@ private extension ImagesListCell {
         contentView.addSubview(mainImage)
         contentView.addSubview(favoriteButton)
         contentView.addSubview(dateLabel)
+        
+        UIImage(named: "activeBtn")?.isAccessibilityElement = false
+        UIImage(named: "noActiveBtn")?.isAccessibilityElement = false
     }
     
     func setupConstraints() {
@@ -168,6 +180,8 @@ private extension ImagesListCell {
             
             favoriteButton.topAnchor.constraint(equalTo: mainImage.topAnchor),
             favoriteButton.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor),
+            favoriteButton.widthAnchor.constraint(equalToConstant: 44),
+            favoriteButton.heightAnchor.constraint(equalToConstant: 44),
             
             dateLabel.bottomAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: -8),
             dateLabel.leadingAnchor.constraint(equalTo: mainImage.leadingAnchor, constant: 8),

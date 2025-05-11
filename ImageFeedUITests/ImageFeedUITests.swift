@@ -12,78 +12,84 @@ final class ImageFeedUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
-        let authButton = app.buttons["Authenticate"]
-        XCTAssertTrue(authButton.waitForExistence(timeout: 5))
-        authButton.tap()
+        app.buttons["Authenticate"].tap()
         
         let webView = app.webViews["UnsplashWebView"]
-        XCTAssertTrue(webView.waitForExistence(timeout: 10))
         
-        let loginTextField = webView.textFields.firstMatch
+        XCTAssertTrue(webView.waitForExistence(timeout: 5))
+
+        let loginTextField = webView.descendants(matching: .textField).element
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
+        
         loginTextField.tap()
-        loginTextField.typeText("art.kriukov@gmail.com")
+        loginTextField.typeText("")
+        webView.swipeUp()
         
-        app.toolbars.buttons["Done"].tap()
+        let passwordTextField = webView.descendants(matching: .secureTextField).element
+        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
-        let passwordTextField = webView.secureTextFields.firstMatch
         passwordTextField.tap()
-        
-        let password = "Telefon11/"
-        for char in password {
-            passwordTextField.typeText(String(char))
-            usleep(500_000)
-        }
+        passwordTextField.typeText("")
+        webView.swipeUp()
         
         webView.buttons["Login"].tap()
         
-        let cell = app.tables.cells.element(boundBy: 0)
-        XCTAssertTrue(cell.waitForExistence(timeout: 10))
+        let tablesQuery = app.tables
+        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
     }
     
-//    func testFeed() throws {
-//        let app = XCUIApplication()
-//        app.launch()
-//        
-//        // 1. Ожидание загрузки ленты
-//        let tablesQuery = app.tables
-//        let firstCell = tablesQuery.cells.element(boundBy: 0)
-//        XCTAssertTrue(firstCell.waitForExistence(timeout: 15), "Лента не загрузилась")
-//        
-//        // 2. Скролл с проверкой
-//        firstCell.swipeUp()
-//        usleep(500_000)
-//        
-//        // 3. Получение ячейки
-//        let cellToLike = tablesQuery.cells.element(boundBy: 1)
-//        
-//        // Явная проверка видимости ячейки
-//        if !cellToLike.isHittable {
-//            tablesQuery.element.swipeUp()
-//        }
-//        XCTAssertTrue(cellToLike.waitForExistence(timeout: 10), "Ячейка для лайка не найдена")
-//        
-//        // 4. Работа с кнопкой лайка
-//        let likeButton = cellToLike.buttons["like_button_off"]
-//        
-//        // Решение проблемы с hit point:
-//        let coordinate = likeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-//        coordinate.tap()
-//        
-//        // Альтернативный вариант:
-//        // cellToLike.tap() // Если кнопка занимает всю ячейку
-//        
-//        // 5. Проверка изменения состояния
-//        let likedButton = cellToLike.buttons["like_button_on"]
-//        XCTAssertTrue(likedButton.waitForExistence(timeout: 5), "Лайк не установился")
-//        
-//        // 6. Возврат
-//        let backButton = app.buttons["nav_back_button_white"]
-//        XCTAssertTrue(backButton.waitForExistence(timeout: 10), "Кнопка возврата не найдена")
-//        backButton.tap()
-//        
-//        // 7. Проверка возврата
-//        XCTAssertTrue(tablesQuery.element.waitForExistence(timeout: 10), "Не вернулись на ленту")
-//    }
+    func testFeed() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Ожидание загрузки ленты
+        let tablesQuery = app.tables
+        XCTAssertTrue(tablesQuery.element.waitForExistence(timeout: 10), "Лента не загрузилась")
+        
+        // Скролл до первой ячейки
+        let firstCell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        firstCell.swipeUp()
+        sleep(1) // Даем время для анимации
+        
+        // Получаем целевую ячейку для взаимодействия
+        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        
+        // Проверяем существование элементов в ячейке
+        XCTAssertTrue(cellToLike.images.firstMatch.waitForExistence(timeout: 5), "Изображение не загрузилось")
+        XCTAssertTrue(cellToLike.staticTexts.firstMatch.exists, "Дата не отображается")
+        
+        // Лайк/дизлайк
+        let likeButton = cellToLike.buttons["like_button_off"]
+        let likedButton = cellToLike.buttons["like_button_on"]
+        
+        likeButton.tap()
+        sleep(5) // Ожидаем обновление состояния
+        XCTAssertTrue(likedButton.exists, "Лайк не активировался")
+        
+        likedButton.tap()
+        sleep(5)
+        XCTAssertTrue(likeButton.exists, "Дизлайк не сработал")
+        
+        // Переход к деталям изображения
+        cellToLike.tap()
+        sleep(5)
+        
+        // Работа с изображением
+        let image = app.scrollViews.images.element(boundBy: 0)
+        XCTAssertTrue(image.waitForExistence(timeout: 5), "Изображение не открылось")
+        
+        // Жесты масштабирования
+        image.pinch(withScale: 3, velocity: 1) // Увеличиваем
+        sleep(1)
+        image.pinch(withScale: 0.5, velocity: -1) // Уменьшаем
+        sleep(1)
+        
+        // Возврат в ленту
+        app.buttons["nav_back_button_white"].tap()
+        XCTAssertTrue(tablesQuery.element.exists, "Не вернулись в ленту")
+    }
     
     func testProfile() throws {
         let app = XCUIApplication()
@@ -102,5 +108,27 @@ final class ImageFeedUITests: XCTestCase {
         alert.buttons["logout_confirm_button"].tap()
         
         XCTAssertTrue(app.buttons["Authenticate"].waitForExistence(timeout: 5))
+    }
+}
+
+extension XCUIElement {
+    func forceTap() {
+        if self.isHittable {
+            self.tap()
+        } else {
+            let coordinate = self.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            coordinate.tap()
+        }
+    }
+    
+    func safeTap() {
+        if self.isHittable {
+            self.tap()
+        } else {
+            let coordinate = self.coordinate(
+                withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)
+            )
+            coordinate.tap()
+        }
     }
 }
