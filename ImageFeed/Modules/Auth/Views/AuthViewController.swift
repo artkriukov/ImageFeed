@@ -7,10 +7,6 @@
 
 import UIKit
 
-enum AuthViewConstants {
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/token"
-}
-
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: AuthViewController)
 }
@@ -61,7 +57,14 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: AuthViewDelegate {
     func pushToUIWebView() {
         let webViewController = WebViewViewController()
+        let authHelper = AuthService()
+
+        let presenter = WebViewPresenter(authHelper: authHelper)
+        
+        webViewController.presenter = presenter
+        presenter.view = webViewController
         webViewController.delegate = self
+        
         navigationController?.pushViewController(webViewController, animated: true)
     }
 }

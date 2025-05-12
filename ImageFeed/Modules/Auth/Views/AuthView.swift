@@ -31,6 +31,7 @@ final class AuthView: UIView {
         element.tintColor = UIConstants.Colors.blackColor
         element.backgroundColor = .white
         element.layer.cornerRadius = 16
+        element.accessibilityIdentifier = "Authenticate"
         element.translatesAutoresizingMaskIntoConstraints = false
         element.addTarget(
             self,

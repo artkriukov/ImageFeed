@@ -61,7 +61,7 @@ final class OAuth2Service {
     }
     
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
-        let urlString = AuthViewConstants.unsplashAuthorizeURLString
+        let urlString = AuthConfiguration.standard.tokenURLString
         
         guard var urlComponents = URLComponents(string: urlString) else {
             assertionFailure("Неверный URL: \(urlString)")

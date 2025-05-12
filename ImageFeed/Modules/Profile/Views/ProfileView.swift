@@ -31,6 +31,7 @@ final class ProfileView: UIView {
     private(set) lazy var logoutButton: UIButton = {
         let element = UIButton(type: .custom)
         element.setImage(UIConstants.Images.logoutButton, for: .normal)
+        element.accessibilityIdentifier = "logout_button"
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
@@ -47,6 +48,7 @@ final class ProfileView: UIView {
         let element = UILabel()
         element.text = "Екатерина Новикова"
         element.font = .systemFont(ofSize: 23, weight: .bold)
+        element.accessibilityIdentifier = "profile_name_label"
         element.textColor = UIConstants.Colors.mainTextColor
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
@@ -57,6 +59,7 @@ final class ProfileView: UIView {
         element.text = "@ekaterina_nov"
         element.numberOfLines = 0
         element.font = .systemFont(ofSize: 13, weight: .regular)
+        element.accessibilityIdentifier = "profile_login_label"
         element.textColor = UIConstants.Colors.secondaryTextColor
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
