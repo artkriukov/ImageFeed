@@ -27,7 +27,7 @@ final class ImagesListCell: UITableViewCell {
     weak var delegate: ImagesListCellDelegate?
     
     // MARK: - UI Elements
-    let mainImage: UIImageView = {
+    let photoImageView: UIImageView = {
         let element = UIImageView()
         element.contentMode = .scaleAspectFill
         element.clipsToBounds = true
@@ -76,8 +76,8 @@ final class ImagesListCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        mainImage.kf.cancelDownloadTask()
-        mainImage.image = nil
+        photoImageView.kf.cancelDownloadTask()
+        photoImageView.image = nil
         removeGradientAnimation()
         favoriteButton.accessibilityIdentifier = nil
     }
@@ -113,7 +113,7 @@ final class ImagesListCell: UITableViewCell {
     
     private func addGradientAnimation() {
         let gradient = CAGradientLayer()
-        gradient.frame = CGRect(x: 0, y: 0, width: mainImage.bounds.width, height: mainImage.bounds.height)
+        gradient.frame = CGRect(x: 0, y: 0, width: photoImageView.bounds.width, height: photoImageView.bounds.height)
         
         gradient.locations = [0, 0.1, 0.3]
         gradient.colors = [
@@ -133,7 +133,7 @@ final class ImagesListCell: UITableViewCell {
         animation.toValue = [0, 0.8, 1]
         
         gradient.add(animation, forKey: "locationsChange")
-        mainImage.layer.addSublayer(gradient)
+        photoImageView.layer.addSublayer(gradient)
         animationLayers.insert(gradient)
     }
     
@@ -163,7 +163,7 @@ final class ImagesListCell: UITableViewCell {
 // MARK: - Setup Views & Constraints
 private extension ImagesListCell {
     func setupViews() {
-        contentView.addSubview(mainImage)
+        contentView.addSubview(photoImageView)
         contentView.addSubview(favoriteButton)
         contentView.addSubview(dateLabel)
         
@@ -173,18 +173,18 @@ private extension ImagesListCell {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            mainImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            mainImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            mainImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            mainImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            photoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            photoImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            photoImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            photoImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             
-            favoriteButton.topAnchor.constraint(equalTo: mainImage.topAnchor),
-            favoriteButton.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor),
+            favoriteButton.topAnchor.constraint(equalTo: photoImageView.topAnchor),
+            favoriteButton.trailingAnchor.constraint(equalTo: photoImageView.trailingAnchor),
             favoriteButton.widthAnchor.constraint(equalToConstant: 44),
             favoriteButton.heightAnchor.constraint(equalToConstant: 44),
             
-            dateLabel.bottomAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: -8),
-            dateLabel.leadingAnchor.constraint(equalTo: mainImage.leadingAnchor, constant: 8),
+            dateLabel.bottomAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -8),
+            dateLabel.leadingAnchor.constraint(equalTo: photoImageView.leadingAnchor, constant: 8),
         ])
     }
 }

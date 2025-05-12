@@ -1,5 +1,5 @@
 //
-//  ImagesListViewController.swift.swift
+//  ImagesListViewController.swift
 //  ImageFeed
 //
 //  Created by Artem Kriukov on 20.02.2025.
@@ -15,7 +15,6 @@ protocol ImagesListViewControllerProtocol: AnyObject {
 }
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
-    
     // MARK: - Properties
     private var presenter: ImagesListPresenterProtocol!
     private let placeholderImage = UIImage(named: "image_placeholder")
@@ -122,18 +121,18 @@ extension ImagesListViewController: UITableViewDataSource {
         cell.showLoadingAnimation()
         
         guard let url = URL(string: photo.thumbImageURL) else {
-            cell.mainImage.image = placeholderImage
+            cell.photoImageView.image = placeholderImage
             return
         }
         
-        cell.mainImage.kf.setImage(
+        cell.photoImageView.kf.setImage(
             with: url,
             placeholder: placeholderImage,
             options: [.transition(.fade(0.2))]
         ) { [weak cell] result in
             cell?.removeGradientAnimation()
             if case .failure = result {
-                cell?.mainImage.image = self.placeholderImage
+                cell?.photoImageView.image = self.placeholderImage
             }
         }
     }

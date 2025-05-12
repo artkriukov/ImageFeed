@@ -38,7 +38,7 @@ final class ImagesListTests: XCTestCase {
 
 // MARK: - Test Doubles
 
-class ImagesListServiceSpy: ImagesListServiceProtocol {
+final class ImagesListServiceSpy: ImagesListServiceProtocol {
     var photos: [Photo] = []
     var fetchPhotosNextPageCalled = false
     var changeLikeCalled = false
