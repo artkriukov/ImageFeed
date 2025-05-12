@@ -57,7 +57,7 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: AuthViewDelegate {
     func pushToUIWebView() {
         let webViewController = WebViewViewController()
-        let authHelper = AuthHelper()
+        let authHelper = AuthService()
 
         let presenter = WebViewPresenter(authHelper: authHelper)
         

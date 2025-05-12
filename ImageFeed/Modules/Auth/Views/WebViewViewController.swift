@@ -13,9 +13,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-
-
-final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
+final class WebViewViewController: UIViewController, WebViewViewControllerProtocol {
     private let webView = WebView()
     weak var delegate: WebViewViewControllerDelegate?
     var presenter: WebViewPresenterProtocol?

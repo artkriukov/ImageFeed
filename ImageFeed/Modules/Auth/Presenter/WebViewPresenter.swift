@@ -8,6 +8,8 @@
 import Foundation
 
 final class WebViewPresenter: WebViewPresenterProtocol {
+    private let progressThreshold: Float = 0.0001
+    
     weak var view: WebViewViewControllerProtocol?
     var authHelper: AuthHelperProtocol
     
@@ -16,9 +18,16 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
 
     func viewDidLoad() {
+        loadAuthRequest()
+        resetProgress()
+    }
+
+    private func loadAuthRequest() {
         guard let request = authHelper.authRequest() else { return }
-        
         view?.load(request: request)
+    }
+
+    private func resetProgress() {
         didUpdateProgressValue(0)
     }
     
@@ -29,7 +38,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func shouldHideProgress(for value: Float) -> Bool {
-        abs(value - 1.0) <= 0.0001
+        abs(value - 1.0) <= progressThreshold
     }
     
     func code(from url: URL) -> String? {
